@@ -1,5 +1,5 @@
 ---
-name: BE
+name: BackEnd
 about: BackEnd 서버 관련 이슈
 title: "[BE]"
 labels: ""
