@@ -1,5 +1,5 @@
 ---
-name: FE
+name: FrontEnd
 about: FrontEnd, Web 관련 이슈
 title: "[FE]"
 labels: ""
