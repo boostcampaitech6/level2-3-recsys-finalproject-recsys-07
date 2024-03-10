@@ -148,11 +148,11 @@ def main(args):
                         user_profile.extend(temp_list)
 
         current_time = datetime.now()
-        # 오후 11시 30분에 종료
-        if current_time.hour == 23 and current_time.minute == 50:
-            print(f'{current_time.hour}:{current_time.minute}')
-            print("Stop the execution:",i)
-            break 
+        # 오전 08시 50분에 종료 (UTC 23:50)
+        if current_time.hour == 8 and current_time.minute == 50:
+            print(f"{current_time.hour}:{current_time.minute}")
+            print("Stop the execution:", i)
+            break
     # print(user_game_list)
 
     with open(f"user_games_{api_version}.pickle", "wb") as fw:
