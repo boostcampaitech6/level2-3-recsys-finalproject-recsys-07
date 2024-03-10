@@ -106,16 +106,16 @@ def get_app_add_info(app_id):
 
 def main(args):
     api_version = args.version
-    # 8826 : 337507060
+    start_i = int(args.start_i)
     range_dict = {
-        1: range(51843226, 337507060, 800),
-        2: range(337507060, 675005294, 800),
-        3: range(675005294, 1012503528, 800),
-        4: range(1012503528, 1350001762, 800),
-        5: range(1350001762, 1687500000, 800),
+        1: range(start_i, 337507060, 800),
+        2: range(start_i, 675005294, 800),
+        3: range(start_i, 1012503528, 800),
+        4: range(start_i, 1350001762, 800),
+        5: range(start_i, 1687500000, 800),
     }
     range_list = range_dict[api_version]
-    steam_api_key = key_dict[api_version]
+    steam_api_key = args.api_key
 
     # user list를 담을 dictionary 생성
     user_game_list = []
@@ -166,6 +166,10 @@ if __name__ == "__main__":
     parser.add_argument(
         "--version", action="store", dest="version", type=int, help="choose version"
     )
+    parser.add_argument(
+        "--api_key", action="store", dest="api_key", type=str, help="API_KEY"
+    )
+    parser.add_argument("--start_i", action="store", dest="start_i", type=str, help="")
     args = parser.parse_args()
 
     # main 함수 호출
