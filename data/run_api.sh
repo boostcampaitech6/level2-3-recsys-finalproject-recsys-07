@@ -1,8 +1,9 @@
 #!/bin/bash
 # API 호출을 담당하는 쉘 스크립트입니다.
 
+# jq를 설치해야 할 수 있습니다. apt-get install jq
 # ../config/api_key.txt 파일에서 API 키를 읽어와서 api_key 변수에 담습니다.
-api_key=$(<../config/api_key.txt)
+api_key=$(jq -r '.api_key' ../config/api_key.json)
 
 # ../config/api_call.config 파일에서 start_i 를 읽어와서 api_key 변수에 담습니다.
 source ../config/api_call.config
