@@ -46,10 +46,13 @@ def get_user_game_library(steam_api_key, steam_user_id):
     # 조회가 실패한 경우 알림을 띄우고 -1 반환
     elif response.status_code == 429:
         print("End of daily API call allowance.")
+        current_time = datetime.now()
+        print(f"gug:{current_time.hour}:{current_time.minute}")
         return -1
     else:
         print(response.status_code, ": Failed to retrieve data.")
-
+        current_time = datetime.now()
+        print(f"gug:{current_time.hour}:{current_time.minute}")
         return 1
 
 
@@ -71,12 +74,12 @@ def get_user_summary(steam_api_key, steam_user_id):
     elif response.status_code == 429:
         print("End of daily API call allowance.")
         current_time = datetime.now()
-        print(f"{current_time.hour}:{current_time.minute}")
+        print(f"gus:{current_time.hour}:{current_time.minute}")
         return -1
     else:
         print(response.status_code, ": Failed to retrieve data.")
         current_time = datetime.now()
-        print(f"{current_time.hour}:{current_time.minute}")
+        print(f"gus:{current_time.hour}:{current_time.minute}")
         return 1
 
 
