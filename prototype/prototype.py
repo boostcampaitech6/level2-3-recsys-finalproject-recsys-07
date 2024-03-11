@@ -21,43 +21,43 @@ def get_user_games(user_id):
         return -1  # 에러가 발생한 경우
 
 
-def load_image(url, game_id, images_dict):
+def load_image(url, game_id, index, images_list):
     response = requests.get(url)
     img = Image.open(BytesIO(response.content))
-    images_dict[game_id] = img
+    images_list[index] = (game_id, img)  # 게임 ID와 이미지를 튜플로 저장
 
 
 def show_recommendations():
-    images = {}
-    result_arr = st.session_state.result[:10]  # 최대 10개의 추천 결과만 사용
-
-    image_urls = {
-        f"https://cdn.akamai.steamstatic.com//steam//apps//{game_id}//header.jpg?t=1666290860": game_id
-        for game_id in result_arr
-    }
+    num_games = len(st.session_state.result[:10])  # 최대 10개의 추천 결과만 사용
+    images_list = [(None, None)] * num_games  # 이미지와 게임 ID를 저장할 리스트 초기화
 
     threads = []
-    for url, game_id in image_urls.items():  # 이미지 로딩을 위한 스레드 생성
-        thread = threading.Thread(target=load_image, args=(url, game_id, images))
+    for index, game_id in enumerate(st.session_state.result[:10]):
+        url = f"https://cdn.akamai.steamstatic.com//steam//apps//{game_id}//header.jpg?t=1666290860"
+        thread = threading.Thread(
+            target=load_image, args=(url, game_id, index, images_list)
+        )
         thread.start()
         threads.append(thread)
 
     for thread in threads:
         thread.join()
 
-    if images:  # 이미지가 있을 경우에만 열 생성
-        cols = st.columns(3)  # 3열로 이미지 표시
+    # 이미지와 게임 링크 출력
+    if images_list:
+        cols = st.columns(3)
         col_index = 0
-        for game_id, img in images.items():
-            if col_index == len(cols):  # 현재 행의 열이 모두 찼으면, 새 행 생성
-                cols = st.columns(3)
-                col_index = 0
-            col = cols[col_index]
-            col_index += 1
-            if col.image(img, use_column_width=True):
+        for index, (game_id, img) in enumerate(images_list):
+            if game_id and img:
+                if col_index == len(cols):
+                    cols = st.columns(3)
+                    col_index = 0
+                col = cols[col_index]
+                col_index += 1
+                col.image(img, use_column_width=True)
                 url = f"https://store.steampowered.com/app/{game_id}"
                 col.markdown(
-                    f'<a href="{url}" target="_blank">Link to Game</a>',
+                    f'{index + 1}. <a href="{url}" target="_blank">Link to Game</a>',
                     unsafe_allow_html=True,
                 )
 
