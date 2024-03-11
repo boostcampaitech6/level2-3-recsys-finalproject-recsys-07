@@ -110,14 +110,20 @@ def get_app_add_info(app_id):
 def main(args):
     api_version = args.version
     start_i = int(args.start_i)
+    # range start index
+    # 1:8826
+    # 2:337507060
+    # 3:675005294
+    # 4:1012503528
+    # 5:1687500000
     range_dict = {
-        1: range(start_i, 337507060, 800),
-        2: range(start_i, 675005294, 800),
-        3: range(start_i, 1012503528, 800),
-        4: range(start_i, 1350001762, 800),
-        5: range(start_i, 1687500000, 800),
+        1: 337507060,
+        2: 675005294,
+        3: 1012503528,
+        4: 1350001762,
+        5: 1687500000,
     }
-    range_list = range_dict[api_version]
+    range_list = range(start_i, range_dict[api_version], 800)
     steam_api_key = args.api_key
 
     # user list를 담을 dictionary 생성
