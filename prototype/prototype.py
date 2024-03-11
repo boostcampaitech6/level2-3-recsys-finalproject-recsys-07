@@ -4,6 +4,7 @@ import requests
 from io import BytesIO
 import threading
 from EASE import *
+import json
 
 
 def get_user_games(user_id):
@@ -114,4 +115,8 @@ def main():
 
 
 if __name__ == "__main__":
+    with open("../config/api_key.json", "r") as f:
+        conf = json.load(f)
+    api_key = conf.get("api_key")
+    # main 호출
     main()
