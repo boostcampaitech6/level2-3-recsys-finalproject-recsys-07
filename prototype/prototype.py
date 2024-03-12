@@ -90,7 +90,7 @@ def load_image(url, result, index, images_list, game_name):
 
 
 def show_recommendations():
-    num_games = len(st.session_state.result[:10])  # 최대 10개의 추천 결과만 사용
+    num_games = len(st.session_state.result[:12])  # 최대 12개의 추천 결과만 사용
     images_list = [
         (None, None, None)
     ] * num_games  # 이미지와 게임 ID를 저장할 리스트 초기화
@@ -99,7 +99,7 @@ def show_recommendations():
 
     threads = []
     for index, (result, game_name) in enumerate(
-        zip(st.session_state.result[:10], st.session_state.result_name[:10])
+        zip(st.session_state.result[:12], st.session_state.result_name[:12])
     ):
         url = f"https://cdn.akamai.steamstatic.com//steam//apps//{result[0]}//header.jpg?t=1666290860"
         total_preference = result[1] + result[2]  # player1과 player2의 선호도 합계
