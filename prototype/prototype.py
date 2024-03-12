@@ -8,7 +8,7 @@ import json
 
 import sys
 
-sys.path.append("/home/jin/level2-3-recsys-finalproject-recsys-07/Model")
+sys.path.append("../Model")
 
 from EASE_inference import *
 
@@ -191,7 +191,7 @@ def main():
         st.session_state.show_recommendations = False
 
     # 로컬 파일에서 WebP 이미지 로드
-    image_path = "/home/jin/level2-3-recsys-finalproject-recsys-07/prototype/logo.png"
+    image_path = "logo.png"
     st.image(image_path)
     if st.session_state.show_recommendations:
         apply_custom_css()
