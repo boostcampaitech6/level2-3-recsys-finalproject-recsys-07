@@ -46,6 +46,8 @@ def ease(user1_arr: List[Dict], user2_arr: List[Dict]) -> List[Tuple[int]]:
     inference_pivot = inference_pivot.fillna(0)
     X = torch.tensor(inference_pivot.values).to(dtype=torch.float).to("cuda")
     S = X @ B
+    S[0] -= torch.min(S[0])
+    S[-1] -= torch.min(S[-1])
     S[0] /= torch.max(S[0])
     S[-1] /= torch.max(S[-1])
 
@@ -54,7 +56,7 @@ def ease(user1_arr: List[Dict], user2_arr: List[Dict]) -> List[Tuple[int]]:
     print("Recommend")
     idx2item = {i: v for i, v in enumerate(col)}
 
-    value, idx = torch.topk(S_, 12)
+    _, idx = torch.topk(S_, 12)
 
     end_time = datetime.now()
     print(f"full time: {end_time - start_time}")
