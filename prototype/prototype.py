@@ -139,14 +139,18 @@ def show_recommendations():
 
                 col.markdown(
                     f"""
-                        <div style="margin-bottom: 2px;">
-                            <span style="color: white">선호도 (게임을 좋아할 확률)</span><br>
-                            <span style="color: #1FC1CC">player1: {int(result[1]*100*0.9)}%</span>
-                            <span style="color: #EBD834">player2: {int(result[2]*100*0.9)}%</span><br>
-                            <span style="color: white">취향 반영률</span><br>
-                            <span style="color: #1FC1CC">player1 : {player1_ratio}%</span>
-                            <span style="color: #EBD834">player2 : {player2_ratio}%</span>
+                    <div style="margin-bottom: 2px;">
+                        <span style="color: white">선호도 (게임을 좋아할 확률)</span><br>
+                        <div style="display: flex; justify-content: space-between;">
+                            <div style="text-align: left; color: #1FC1CC">player1 : {int(result[1]*100*0.9)}%</div>
+                            <div style="text-align: right; color: #EBD834">player2 : {int(result[2]*100*0.9)}%</div>
                         </div>
+                        <span style="color: white">취향 반영률</span><br>
+                        <div style="display: flex; justify-content: space-between;">
+                            <div style="text-align: left; color: #1FC1CC">player1 : {player1_ratio}%</div>
+                            <div style="text-align: right; color: #EBD834">player2 : {player2_ratio}%</div>
+                        </div>
+                    </div>
                     """,
                     unsafe_allow_html=True,
                 )
