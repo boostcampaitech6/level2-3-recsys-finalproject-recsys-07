@@ -140,9 +140,9 @@ def show_recommendations():
                 col.markdown(
                     f"""
                         <div style="margin-bottom: 2px;">
-                            <span style="color: white">선호도</span><br>
-                            <span style="color: #1FC1CC">player1: {int(result[1]*100*0.9)}</span>
-                            <span style="color: #EBD834">player2: {int(result[2]*100*0.9)}</span><br>
+                            <span style="color: white">선호도 (게임을 좋아할 확률)</span><br>
+                            <span style="color: #1FC1CC">player1: {int(result[1]*100*0.9)}%</span>
+                            <span style="color: #EBD834">player2: {int(result[2]*100*0.9)}%</span><br>
                             <span style="color: white">취향 반영률</span><br>
                             <span style="color: #1FC1CC">player1 : {player1_ratio}%</span>
                             <span style="color: #EBD834">player2 : {player2_ratio}%</span>
@@ -204,7 +204,7 @@ def main():
     else:
         apply_custom_css()
         st.session_state.user_code = st.text_input("player1의 코드를 입력하세요.")
-        st.session_state.friend_code = st.text_input("plater2의 코드를 입력하세요.")
+        st.session_state.friend_code = st.text_input("player2의 코드를 입력하세요.")
         if st.button("추천 받기"):
             if st.session_state.user_code and st.session_state.friend_code:
                 st.session_state.user_games = get_user_games(st.session_state.user_code)
