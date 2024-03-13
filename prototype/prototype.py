@@ -28,11 +28,6 @@ def apply_custom_css():
                 color: #ffffff;
                 background-color: #1b2838;
             }
-            /* st.title 스타일 변경 */
-            h1 {
-                color: #ffffff;
-                font-family: sans-serif;
-            }
             /* st.text_input의 플레이스홀더 글씨 색상 변경 */
             ::placeholder {
                 color: #ffffff;
@@ -49,6 +44,10 @@ def apply_custom_css():
             .stTextInput>div>div>input {
                 color: #ffffff;
                 background-color: #2a475e;
+            }
+            .stSpinner>div>div {
+                color: #ffffff;
+                border-top-color: #1FC1CC;
             }
         </style>
     """,
@@ -209,9 +208,21 @@ def main():
     else:
         st.image(image_path)
         apply_custom_css()
-        st.session_state.user_code = st.text_input("player1의 코드를 입력하세요.")
-        st.session_state.friend_code = st.text_input("player2의 코드를 입력하세요.")
-        if st.button("추천 받기"):
+
+        # 컨테이너를 만듭니다. 나중에 이 컨테이너를 채우거나 비울 수 있습니다.
+        user_code_container = st.empty()
+        friend_code_container = st.empty()
+        button_container = st.empty()
+
+        # 임시로 컨테이너에 입력 위젯을 채웁니다.
+        st.session_state.user_code = user_code_container.text_input(
+            "player1의 코드를 입력하세요."
+        )
+        st.session_state.friend_code = friend_code_container.text_input(
+            "player2의 코드를 입력하세요."
+        )
+
+        if button_container.button("추천 받기"):
             if st.session_state.user_code and st.session_state.friend_code:
                 st.session_state.user_games = get_user_games(st.session_state.user_code)
                 st.session_state.friend_games = get_user_games(
@@ -237,15 +248,20 @@ def main():
                         "player2의 게임 정보를 가져올 수 없습니다. Steam ID를 확인해주세요."
                     )
                 else:
-                    st.session_state.result = ease(
-                        st.session_state.user_games, st.session_state.friend_games
-                    )
-                    st.session_state.result_name = get_game_name(
-                        st.session_state.result
-                    )
-                    print(st.session_state.result_name)
-                    st.session_state.show_recommendations = True
-                    st.rerun()
+                    user_code_container.empty()
+                    friend_code_container.empty()
+                    button_container.empty()
+                    apply_custom_css()
+                    with st.spinner("로딩중... 약 10초 정도 걸립니다."):
+                        st.session_state.result = ease(
+                            st.session_state.user_games, st.session_state.friend_games
+                        )
+                        st.session_state.result_name = get_game_name(
+                            st.session_state.result
+                        )
+                        print(st.session_state.result_name)
+                        st.session_state.show_recommendations = True
+                        st.rerun()
             else:
                 st.error("모든 필드를 입력해주세요.")
 
