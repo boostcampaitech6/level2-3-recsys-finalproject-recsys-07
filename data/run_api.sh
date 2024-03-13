@@ -20,9 +20,11 @@ PID=$!
   # 'nohup.out'에서 마지막 'Stop the execution' 메시지 추출
   # tail로 마지막 줄을 가져온 후, awk를 사용해 숫자만 추출
   last_i_value=$(tail -n 1 nohup.out | awk '{print $NF}');
+  # 다음 index로 stride만큼 증가
+  last_i_value=$((last_i_value + 800))
   # 캡처된 i 값을 사용하여 api_call.config 업데이트
   if [[ ! -z "$last_i_value" ]]; then
-    sed -i "s/start_i = .*/start_i = ${last_i_value}/" ../config/api_call.config;
+    sed -i "s/start_i=.*/start_i=${last_i_value}/" ../config/api_call.config;
   fi
 } &
 
