@@ -1,0 +1,4 @@
+pandas
+torch == 1.12.1
+numpy
+tqdm
