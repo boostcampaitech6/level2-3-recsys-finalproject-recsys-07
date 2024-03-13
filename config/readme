@@ -1,6 +1,13 @@
 ## README
 
 # api_call 사용법
-- config 폴더 아래에 api_key.txt file을 생성하고 api key를 입력해주세요.
+- config 폴더 아래에 api_key.json file을 생성하고 api key를 입력해주세요.
+# (양식)
+{
+    "api_key": "API KEY 입력"
+}
 - api_call.config에 담당한 version을 작성해주세요.
 - api_call.config에 시작할 index를 작성해주세요.
+
+- api_call.py가 끝나면 자동으로 nohup log의 가장 마지막 i+800을 이용하여
+api_call.config의 start_i를 수정합니다.
