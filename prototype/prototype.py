@@ -196,8 +196,9 @@ def main():
 
     # 로컬 파일에서 WebP 이미지 로드
     image_path = "logo.png"
-    st.image(image_path)
+    image_path_s = "logo_small.png"
     if st.session_state.show_recommendations:
+        st.image(image_path_s)
         apply_custom_css()
         show_recommendations()
         # "처음으로" 버튼 추가
@@ -206,6 +207,7 @@ def main():
             st.rerun()
 
     else:
+        st.image(image_path)
         apply_custom_css()
         st.session_state.user_code = st.text_input("player1의 코드를 입력하세요.")
         st.session_state.friend_code = st.text_input("player2의 코드를 입력하세요.")
