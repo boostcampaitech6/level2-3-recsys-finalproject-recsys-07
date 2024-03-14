@@ -157,8 +157,8 @@ def main(args):
                         user_profile.extend(temp_list)
 
         current_time = datetime.now()
-        # 오전 08시 50분에 종료 (UTC 23:50)
-        if current_time.hour == 8 and current_time.minute == 50:
+        # 오전 08시 50분~ 오전 09시 사이에 종료 (UTC 23:50-00:00)
+        if current_time.hour == 8 and current_time.minute >= 50:
             print(f"{current_time.hour}:{current_time.minute}")
             print("Stop the execution:", i)
             break
