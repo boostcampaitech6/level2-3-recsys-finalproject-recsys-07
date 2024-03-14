@@ -55,7 +55,7 @@ app = FastAPI(lifespan=service_initialize)
 async def predict(user_urls: str, request: Request):
     """
     Input: 복수의 steam user 들의 profil url을 comma(,) 를 delimeter로 하여 하나의 str로 입력받습니다.
-    Output: return 합니다.
+    Output: Status에 성공 여부 를, Response에 appid, likelihood를 return 합니다.
     """
     model = request.app.state.model
     col = model.col
