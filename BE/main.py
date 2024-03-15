@@ -66,14 +66,14 @@ async def predict(user_urls: str, request: Request):
     # input validation
     # get user information from db
     # get user infromation from steam api
-    inference_pivot = pd.DataFrame(columns=col)
-    for library in user_libraries:
+    inference_pivot = pd.DataFrame(index=range(len(urls)), columns=col)
+    for i, library in enumerate(user_libraries):
         for game in library:
             appid = game["appid"]
             if appid not in hash_col:
                 continue
             time = labeling(game["playtime_forever"])
-            inference_pivot.loc[0, appid] = time
+            inference_pivot.loc[i, appid] = time
 
     inference_pivot = inference_pivot.fillna(0)
     X = torch.tensor(inference_pivot.values).to(dtype=torch.float).to("cuda")
@@ -104,8 +104,3 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-# todo
-# input -> url -> get steamid64 -> Error check -> get library and play time -> Error checklr ->
-# model
-# latency check
