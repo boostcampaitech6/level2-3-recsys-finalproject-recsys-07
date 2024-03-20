@@ -10,22 +10,23 @@ warnings.filterwarnings("ignore")
 
 def labeling(time):
     if time == 0:
-        return 0.5
-    elif time < 120:
-        return 1.0
+        return 0
     else:
-        hour = time / 60
-        return math.log(hour, 2)
-        # 2시간 = 1.0, 4시간 = 2.0, ... , 1000시간 = 10.0, 10000시간 = 13.3
+        base = 10000 * 60
+        return math.log(time, base)
+        # 1분 = 0, 2시간 = 0.36, 10시간 = 0.48, 100시간 = 0.65, 10000시간 = 1.00, 40000시간 = 1.10
 
 
-def train(lambda_: int = 100, log_labeling: bool = True) -> None:
+def train(lambda_: int = 100) -> None:
     lambda_ = lambda_
 
-    df = pd.read_csv("DB_interaction.csv")
+    print("Load")
+    df = pd.read_csv("DB_interaction_0320.csv")
 
-    if log_labeling:
-        df["playtime_forever"] = df["playtime_forever"].apply(labeling)
+    df["playtime_forever"] = df["playtime_forever"].apply(labeling)
+    df["playtime_forever"] += df["z_score"]
+    df["playtime_forever"].apply(lambda x: max(x, 0))
+
     pivot = df.pivot(
         index="steamid", columns="appid", values="playtime_forever"
     ).fillna(0)
@@ -45,8 +46,9 @@ def train(lambda_: int = 100, log_labeling: bool = True) -> None:
     print("Save")
     with open("B.pickle", "wb") as f:
         pickle.dump(B, f)
-    with open("Column.pickle", "wb") as f:
-        pickle.dump(pivot.columns, f)
+    with open("app_stat.pickle", "wb") as f:
+        df = pd.DataFrame(df.groupby("appid")[["mean", "std"]].max())
+        pickle.dump(df, f)
 
 
 if __name__ == "__main__":
