@@ -24,8 +24,9 @@ def ease(user1_arr: List[Dict], user2_arr: List[Dict]) -> List[Tuple[int]]:
     print("Load")
     with open("B.pickle", "rb") as f:
         B = pickle.load(f)
-    with open("Column.pickle", "rb") as f:
-        col = pickle.load(f)
+    with open("app_stat.pickle", "rb") as f:
+        df = pickle.load(f)
+        col = df.index
 
     start_time2 = datetime.now()
     inference_pivot = pd.DataFrame(columns=col)
@@ -34,14 +35,20 @@ def ease(user1_arr: List[Dict], user2_arr: List[Dict]) -> List[Tuple[int]]:
         if not appid in col:
             continue
         time = labeling(game["playtime_forever"])
-        inference_pivot.loc[0, appid] = time
+        z_score = (game["playtime_forever"] - df.loc[appid, "mean"]) / df.loc[
+            appid, "std"
+        ]
+        inference_pivot.loc[0, appid] = max(time + z_score, 0)
 
     for game in user2_arr:
         appid = game["appid"]
         if not appid in col:
             continue
         time = labeling(game["playtime_forever"])
-        inference_pivot.loc[1, appid] = time
+        z_score = (game["playtime_forever"] - df.loc[appid, "mean"]) / df.loc[
+            appid, "std"
+        ]
+        inference_pivot.loc[1, appid] = max(time + z_score, 0)
 
     inference_pivot = inference_pivot.fillna(0)
     X = torch.tensor(inference_pivot.values).to(dtype=torch.float).to("cuda")
