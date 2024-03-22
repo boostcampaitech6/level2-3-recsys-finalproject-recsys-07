@@ -26,11 +26,11 @@ def fetch_table_data(table_name):
         with connection.cursor() as cursor:
             query = f"SELECT * FROM {table_name}"
             if table_name == "app_info":
-                query = """SELECT appid, name, app_type,required_age, is_adult, is_free, 
+                query = """SELECT appid, name, is_adult, is_free, 
 on_windows, on_mac, on_linux, English, Korean, multi_player,
 PvP, Co_op, MMO,Action, Adventure, Indie,
 RPG, Strategy, Simulation,Casual, Sports, Racing,
-Violent, Gore, Utilities, Sexual_content, app_use FROM app_info;"""
+Violent, Gore FROM app_info;"""
             cursor.execute(query)
             result = cursor.fetchall()
 
