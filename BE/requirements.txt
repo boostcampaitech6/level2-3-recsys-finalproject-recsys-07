@@ -2,3 +2,4 @@ pandas
 torch == 1.12.1
 numpy
 fastapi
+pymysql
