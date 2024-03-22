@@ -25,6 +25,12 @@ def fetch_table_data(table_name):
 
         with connection.cursor() as cursor:
             query = f"SELECT * FROM {table_name}"
+            if table_name == "app_info":
+                query = """SELECT appid, name, app_type,required_age, is_adult, is_free, 
+on_windows, on_mac, on_linux, English, Korean, multi_player,
+PvP, Co_op, MMO,Action, Adventure, Indie,
+RPG, Strategy, Simulation,Casual, Sports, Racing,
+Violent, Gore, Utilities, Sexual_content, app_use FROM app_info;"""
             cursor.execute(query)
             result = cursor.fetchall()
 
@@ -79,12 +85,6 @@ async def service_initialize(app: FastAPI):
     # DB를 DF의 형태로 얻어오기
     app.state.app_info_df = fetch_table_data("app_info")
     app.state.app_info_df["appid"] = app.state.app_info_df["appid"].map(int)
-    app.state.app_info_df["genres"] = app.state.app_info_df["genres"].map(
-        lambda x: {key: True for key in str(x).split(",")}
-    )
-    app.state.app_info_df["categories"] = app.state.app_info_df["categories"].map(
-        lambda x: {key: True for key in str(x).split(",")}
-    )
     print("got app info")
     app.state.user_info_df = fetch_table_data("user_info")
     print("got user info")
