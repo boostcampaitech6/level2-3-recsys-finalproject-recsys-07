@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query
 import math
 import pandas as pd
 import pickle
@@ -7,6 +7,7 @@ import requests
 import torch
 import json
 import pymysql
+import re
 
 with open("../config/api_key.json", "r") as f:
     conf = json.load(f)
@@ -58,6 +59,8 @@ def labeling(time):
 
 
 def get_user_games(user_id):
+    if user_id is None:
+        return -1
     url = f"https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={api_key}&steamid={user_id}&format=json"
     try:
         response = requests.get(url)
@@ -69,6 +72,27 @@ def get_user_games(user_id):
             return []  # API는 성공했으나 게임 목록이 없는 경우
     except requests.exceptions.RequestException as e:
         return -1  # 에러가 발생한 경우
+
+
+def extract_steam64id_from_url(profile_url):
+    # profile에 steam64ID가 있을경우
+    match = re.search(r"steamcommunity\.com/profiles/([0-9]+)", profile_url)
+    if match:
+        return match.group(1)
+
+    # 사용자 정의 URL의 경우 Steam API를 통해 steam64ID 조회
+    match = re.search(r"steamcommunity\.com/id/(\w+)", profile_url)
+    if match:
+        vanity_url = match.group(1)
+        response = requests.get(
+            f"https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/",
+            params={"key": api_key, "vanityurl": vanity_url},
+        )
+        data = response.json()
+        if data["response"]["success"] == 1:
+            return data["response"]["steamid"]
+
+    return None
 
 
 @asynccontextmanager
@@ -96,8 +120,8 @@ async def service_initialize(app: FastAPI):
 app = FastAPI(lifespan=service_initialize)
 
 
-@app.get("/predict/{user_urls}")
-async def predict(user_urls: str, request: Request):
+@app.get("/predict")
+async def predict(request: Request, user_urls: str = Query(...)):
     """
     Input: 복수의 steam user 들의 profil url을 comma(,) 를 delimeter로 하여 하나의 str로 입력받습니다.
     Output: Status에 성공 여부 를, Response에 appid, likelihood를 return 합니다.
@@ -106,7 +130,7 @@ async def predict(user_urls: str, request: Request):
     col = model.col
     hash_col = {k: True for k in col}
     urls = list(user_urls.split(","))
-    user_libraries = [get_user_games(url) for url in urls]
+    user_libraries = [get_user_games(extract_steam64id_from_url(url)) for url in urls]
 
     # input validation
     # get user information from db
