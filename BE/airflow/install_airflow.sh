@@ -25,3 +25,5 @@ pip install -U apache-airflow-providers-common-sql
 pip install -U mysqlclient
 pip install -U mysql-connector-python
 pip install -U apache-airflow-providers-mysql
+
+pip install pyarrow
