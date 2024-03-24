@@ -1,14 +1,11 @@
+import re
+import logging
 import pickle
-import argparse
-import requests
-import time
-from datetime import datetime, timedelta
-import pandas as pd
 import math
 import torch
 import itertools
-import re
-import logging
+import pandas as pd
+from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.http.hooks.http import HttpHook
@@ -18,10 +15,17 @@ from airflow.operators.dummy import DummyOperator
 
 
 def read_meta_files():
-    with open(f"resource/API_key.txt", "r", encoding="utf-8") as fr:
+    # 절대경로 입력하기
+    with open(
+        f"/level2-3-recsys-finalproject-recsys-07/BE/resource/API_key.txt",
+        "r",
+        encoding="utf-8",
+    ) as fr:
         steam_api_key = fr.read()
 
-    with open(f"resource/new_id_list.txt", "r") as fr:
+    with open(
+        f"level2-3-recsys-finalproject-recsys-07/BE/resource/new_id_list.txt", "r"
+    ) as fr:
         new_ids = [line.strip() for line in fr]
 
     return steam_api_key, new_ids
@@ -424,7 +428,7 @@ def mark_app_use_to_table():
     conn.close()
 
 
-def preprocessing():
+def preprocessing_and_training():
     mysql_hook = MySqlHook(mysql_conn_id="steam_DB")
     sql = """
         SELECT user_id, appid, playtime_forever
@@ -534,9 +538,12 @@ def train(df):
     for i in range(len(B)):
         B[i][i] = 0
 
-    with open("../model/B.pickle", "wb") as f:
+    # 절대경로 입력하기
+    with open("/level2-3-recsys-finalproject-recsys-07/Model/B.pickle", "wb") as f:
         pickle.dump(B, f)
-    with open("../model/app_stat.pickle", "wb") as f:
+    with open(
+        "/level2-3-recsys-finalproject-recsys-07/Model/app_stat.pickle", "wb"
+    ) as f:
         df = pd.DataFrame(df.groupby("appid")[["mean", "std"]].max())
         pickle.dump(df, f)
 
@@ -545,8 +552,8 @@ with DAG(
     dag_id="NEW_ID_DB_UPDATE",
     description="Data collection via API call and Updating DB",
     start_date=datetime(2024, 3, 22, 9, 0),
-    schedule_interval="30 9 * * *",
-    tags=["collection", "updating"],
+    schedule_interval="00 9 * * *",
+    tags=["collection", "updating", "training", "making_files"],
 ) as dag:
 
     start = DummyOperator(task_id="start")
@@ -612,9 +619,9 @@ with DAG(
         """,
     )
 
-    preprocessing = PythonOperator(
-        task_id="preprocessing",
-        python_callable=preprocessing,
+    file_generation = PythonOperator(
+        task_id="file_generation",
+        python_callable=preprocessing_and_training,
     )
 
     finish = DummyOperator(task_id="finish")
@@ -631,6 +638,6 @@ with DAG(
         >> insert_app_info
         >> mark_app_use
         >> mark_user_use
-        >> preprocessing
+        >> file_generation
         >> finish
     )
