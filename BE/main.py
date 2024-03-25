@@ -185,17 +185,6 @@ async def predict(request: Request, user_urls: str = Query(...)):
 
     idx2item = {i: v for i, v in enumerate(col)}
 
-<<<<<<< HEAD
-    _, idx = torch.topk(S_, 12)
-
-    return {
-        "dev": "progress",
-        "reponse": [
-            (idx2item[i], S[0][i].item(), S[-1][i].item())
-            for i in idx.reshape(-1).tolist()
-        ],
-    }
-=======
     _, idx = torch.topk(S_, 1000)
 
     predict_data = [
@@ -222,7 +211,6 @@ async def predict(request: Request, user_urls: str = Query(...)):
     predict_with_metadata = json.loads(df.to_json(orient="records"))
 
     return predict_with_metadata
->>>>>>> origin/BE_30_KEW
 
 
 if __name__ == "__main__":
