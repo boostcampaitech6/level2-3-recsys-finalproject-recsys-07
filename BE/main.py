@@ -1,10 +1,53 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 import math
+import numpy as np
 import pandas as pd
 import pickle
 import requests
 import torch
+import json
+import pymysql
+import re
+
+with open("../config/api_key.json", "r") as f:
+    conf = json.load(f)
+api_key = conf.get("api_key")
+
+with open("../config/DB_config.json", "r") as f:
+    DATABASE_CONFIG = json.load(f)
+DATABASE_CONFIG["charset"] = "utf8mb4"
+DATABASE_CONFIG["cursorclass"] = pymysql.cursors.DictCursor
+
+
+def fetch_table_data(table_name):
+
+    try:
+        connection = pymysql.connect(**DATABASE_CONFIG)
+
+        with connection.cursor() as cursor:
+            query = f"SELECT * FROM {table_name}"
+            if table_name == "app_info":
+                query = """SELECT appid, name, is_adult, is_free, 
+on_windows, on_mac, on_linux, English, Korean, multi_player,
+PvP, Co_op, MMO,Action, Adventure, Indie,
+RPG, Strategy, Simulation,Casual, Sports, Racing,
+Violent, Gore FROM app_info;"""
+            cursor.execute(query)
+            result = cursor.fetchall()
+
+            return pd.DataFrame(result)
+
+    except Exception as e:
+        print(f"An error occurred while fetching data from {table_name}: {e}")
+        return pd.DataFrame()  # 에러가 발생했다면, 빈 DataFrame 반환
+
+    finally:
+        # 연결 종료
+        if connection:
+            connection.close()
 
 
 def labeling(time):
@@ -19,7 +62,8 @@ def labeling(time):
 
 
 def get_user_games(user_id):
-    api_key = ""
+    if user_id is None:
+        return -1
     url = f"https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={api_key}&steamid={user_id}&format=json"
     try:
         response = requests.get(url)
@@ -30,7 +74,28 @@ def get_user_games(user_id):
         else:
             return []  # API는 성공했으나 게임 목록이 없는 경우
     except requests.exceptions.RequestException as e:
-        return -1  # 에러가 발생한 경우
+        return -2  # 에러가 발생한 경우
+
+
+def extract_steam64id_from_url(profile_url):
+    # profile에 steam64ID가 있을경우
+    match = re.search(r"steamcommunity\.com/profiles/([0-9]+)", profile_url)
+    if match:
+        return match.group(1)
+
+    # 사용자 정의 URL의 경우 Steam API를 통해 steam64ID 조회
+    match = re.search(r"steamcommunity\.com/id/(\w+)", profile_url)
+    if match:
+        vanity_url = match.group(1)
+        response = requests.get(
+            f"https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/",
+            params={"key": api_key, "vanityurl": vanity_url},
+        )
+        data = response.json()
+        if data["response"]["success"] == 1:
+            return data["response"]["steamid"]
+
+    return None
 
 
 @asynccontextmanager
@@ -53,9 +118,18 @@ async def service_initialize(app: FastAPI):
 
 app = FastAPI(lifespan=service_initialize)
 
+app.mount("/static", StaticFiles(directory="fe"), name="static")
 
-@app.get("/predict/{user_urls}")
-async def predict(user_urls: str, request: Request):
+templates = Jinja2Templates(directory="fe")
+
+
+@app.get("/")
+async def read_root(request: Request):
+    return templates.TemplateResponse("prototype3.html", {"request": request})
+
+
+@app.get("/predict")
+async def predict(request: Request, user_urls: str = Query(...)):
     """
     Input: 복수의 steam user 들의 profil url을 comma(,) 를 delimeter로 하여 하나의 str로 입력받습니다.
     Output: Status에 성공 여부 를, Response에 appid, likelihood를 return 합니다.
@@ -65,8 +139,16 @@ async def predict(user_urls: str, request: Request):
     col = request.app.state.col
     hash_col = {k: True for k in col}
     urls = list(user_urls.split(","))
-    user_libraries = [get_user_games(url) for url in urls]
+    user_libraries = [get_user_games(extract_steam64id_from_url(url)) for url in urls]
 
+    users_error = [0, 0]
+    for i, library in enumerate(user_libraries):
+        if library in [-1, -2]:
+            users_error[i] = library
+        if library == []:
+            users_error[i] = -3
+    if users_error != [0, 0]:
+        return {"errorcode": users_error}
     # input validation
     # get user information from db
     # get user infromation from steam api
@@ -96,7 +178,7 @@ async def predict(user_urls: str, request: Request):
 
     idx2item = {i: v for i, v in enumerate(col)}
 
-    _, idx = torch.topk(S_, 1000)
+    _, idx = torch.topk(S_, 12)
 
     return {
         "dev": "progress",
