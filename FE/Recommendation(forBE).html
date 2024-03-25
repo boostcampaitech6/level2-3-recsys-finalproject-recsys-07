@@ -3,17 +3,19 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Steam Game Recommendation System</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="/static/style.css">
        
 	</head>
 	<body>
 		<header style="text-align: center;">
             <!-- 로고 이미지 추가. 클릭 시 resetPage 함수 호출 -->
-            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="cursor: pointer;" onclick="window.location.href='index(forBE).html';" />
+            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="cursor: pointer;" onclick="window.location.href='/static/index(forBE).html';" />
         </header>
 		<main>
-            <p id="loadingText" style="display:none;">약 10초 정도 걸립니다...</p>
-            <div id="spinner" class="spinner" style="display: none;"></div>
+            <div class="spinner-container">
+                <div class="spinner" style="display: none;"></div>
+                <p id="loadingText" style="display: none;">약 10초 정도 걸립니다...</p>
+            </div>
             
             <section id="recommendationSection" style="display:none;">
                 <div id="fo"><h1>Filter Options</h1></div>
