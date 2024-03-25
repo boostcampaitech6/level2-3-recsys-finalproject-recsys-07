@@ -52,12 +52,10 @@ Violent, Gore FROM app_info;"""
 
 def labeling(time):
     if time == 0:
-        return 0.5
-    elif time < 120:
-        return 1.0
+        return 0
     else:
-        hour = time / 60
-        return math.log(hour, 2)
+        base = 10000 * 60
+        return math.log(time, base)
         # 2시간 = 1.0, 4시간 = 2.0, ... , 1000시간 = 10.0, 10000시간 = 13.3
 
 
@@ -144,7 +142,7 @@ async def predict(request: Request, user_urls: str = Query(...)):
     B = request.app.state.B
     z_df = request.app.state.df
     col = request.app.state.col
-    hash_col = {k: True for k in col}
+    hash_col = {int(k): True for k in col}
     urls = list(user_urls.split(","))
     user_libraries = [get_user_games(extract_steam64id_from_url(url)) for url in urls]
 
@@ -163,18 +161,23 @@ async def predict(request: Request, user_urls: str = Query(...)):
     for i, library in enumerate(user_libraries):
         for game in library:
             appid = game["appid"]
+            # print(appid)
             if appid not in hash_col:
                 continue
             time = labeling(game["playtime_forever"])
-            z_score = (game["playtime_forever"] - z_df.loc[appid, "mean"]) / z_df.loc[
-                appid, "std"
-            ]
-            inference_pivot.loc[0, appid] = max(time + z_score, 0)
-
+            z_score = (
+                game["playtime_forever"] - z_df.loc[str(appid), "mean"]
+            ) / z_df.loc[str(appid), "std"]
+            inference_pivot.loc[i, str(appid)] = max(time + z_score, 0)
+    # print(hash_col)
     inference_pivot = inference_pivot.fillna(0)
     X = torch.tensor(inference_pivot.values).to(dtype=torch.float).to("cuda")
     # inference by model
     S = X @ B
+    # print(X)
+    # print(X.unique())
+    # print(S.unique())
+    # print(B)
     # post process
     S[0] -= torch.min(S[0])
     S[-1] -= torch.min(S[-1])
@@ -192,6 +195,7 @@ async def predict(request: Request, user_urls: str = Query(...)):
     ]
 
     df = pd.DataFrame(predict_data, columns=["appid", "p1likelihood", "p2likelihood"])
+    # print(df[df["p1likelihood"].isna()])
     for i, library in enumerate(user_libraries):
         appid2idx = {appid: idx for idx, appid in df["appid"].items()}
         df[f"p{i+1}own"] = 0
@@ -200,6 +204,9 @@ async def predict(request: Request, user_urls: str = Query(...)):
                 df.iloc[appid2idx[game["appid"]], 3 + i] = 1
             except:
                 pass
+    # print(app.state.app_info_df[app.state.app_info_df["appid"].isna()])
+    # print(df[df["appid"] == df["appid"].max()])
+    df["appid"] = df["appid"].astype("int")
     df = df.merge(app.state.app_info_df, on="appid")
     df["total_preference"] = df["p1likelihood"] + df["p2likelihood"]
 
