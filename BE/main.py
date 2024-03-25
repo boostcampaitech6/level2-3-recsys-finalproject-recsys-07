@@ -194,6 +194,13 @@ async def predict(request: Request, user_urls: str = Query(...)):
             except:
                 pass
     df = df.merge(app.state.app_info_df, on="appid")
+    df["total_preference"] = df["p1likelihood"] + df["p2likelihood"]
+
+    df["preference_ratio1"] = 100 * df["p1likelihood"] / df["total_preference"]
+    df["preference_ratio1"] = df["preference_ratio1"].astype("int")
+    
+    df["preference_ratio2"] = 100 * df["p2likelihood"] / df["total_preference"]
+    df["preference_ratio2"] = df["preference_ratio2"].astype("int")
     predict_with_metadata = json.loads(df.to_json(orient="records"))
 
     return predict_with_metadata
