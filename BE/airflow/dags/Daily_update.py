@@ -1,3 +1,4 @@
+
 import re
 import logging
 import pickle
@@ -16,17 +17,17 @@ from airflow.operators.dummy import DummyOperator
 
 def read_meta_files():
     # 절대경로 입력하기
-    with open(
-        f"/level2-3-recsys-finalproject-recsys-07/BE/resource/API_key.txt",
-        "r",
-        encoding="utf-8",
-    ) as fr:
+    api_key_file_path = "/level2-3-recsys-finalproject-recsys-07/BE/resource/API_key.txt"
+    new_ids_file_path = "/level2-3-recsys-finalproject-recsys-07/BE/resource/new_id_list.txt"
+
+    with open(api_key_file_path, "r", encoding="utf-8") as fr:
         steam_api_key = fr.read()
 
-    with open(
-        f"level2-3-recsys-finalproject-recsys-07/BE/resource/new_id_list.txt", "r"
-    ) as fr:
+    with open(new_ids_file_path, "r") as fr:
         new_ids = [line.strip() for line in fr]
+
+    with open(new_ids_file_path, "w") as fw:
+        pass
 
     return steam_api_key, new_ids
 
@@ -330,9 +331,30 @@ def insert_user_info_table(**kwargs):
     cur.close()
     conn.close()
 
+def update_user_info_table(**kwargs):
+    ti = kwargs["ti"]
+    _,user_profile_list = ti.xcom_pull(task_ids="separation_insert_and_update_ids")
+
+    mysql_hook = MySqlHook(mysql_conn_id="steam_DB")
+
+    sql_profiles = """UPDATE `user_info`
+                    SET data_time=%s, personaname=%s
+                    WHERE steamid LIKE %s"""
+    
+    conn = mysql_hook.get_conn()
+    cur = conn.cursor()
+    for user_profile in user_profile_list:
+        user = list(reversed(user_profile))
+        cur.execute(sql_profiles, user)
+        conn.commit()
+
+    cur.close()
+    conn.close()
 
 def insert_interactions_table(**kwargs):
     ti = kwargs["ti"]
+    user_profile_list, _ = ti.xcom_pull(task_ids="separation_insert_and_update_ids")
+    user_id_list = [user[0] for user in user_profile_list]
     user_game_list = ti.xcom_pull(task_ids="user_games_api_calls")
     app_infos = pd.DataFrame(
         user_game_list,
@@ -358,12 +380,58 @@ def insert_interactions_table(**kwargs):
     cur = conn.cursor()
 
     for interaction in interaction_list:
-        cur.execute(sql_profiles, interaction)
-        conn.commit()
+        if interaction[0] in user_id_list:
+            cur.execute(sql_profiles, interaction)
+            conn.commit()
 
     cur.close()
     conn.close()
 
+def update_interactions_table(**kwargs):
+    ti = kwargs["ti"]
+    _, user_profile_list = ti.xcom_pull(task_ids="separation_insert_and_update_ids")
+    user_id_list = [user[0] for user in user_profile_list]
+    user_game_list = ti.xcom_pull(task_ids="user_games_api_calls")
+    
+    app_infos = pd.DataFrame(
+        user_game_list,
+        columns=[
+            "steamid",
+            "name",
+            "appid",
+            "playtime_forever",
+            "playtime_2weeks",
+            "img_logo_url",
+        ],
+    ).astype("str")
+    interaction_list = app_infos.loc[
+        :, ["steamid", "appid", "playtime_forever", "playtime_2weeks"]
+    ].values.tolist()
+
+    mysql_hook = MySqlHook(mysql_conn_id="steam_DB")
+
+    sql_delete = """ DELETE FROM `user_game_interaction`
+                    WHERE user_id LIKE %s"""
+    
+    sql_profiles = """INSERT INTO `user_game_interaction`
+                    (user_id, appid, playtime_forever, playtime_2weeks) 
+                    VALUES (%s, %s, %s, %s);"""
+    conn = mysql_hook.get_conn()
+    cur = conn.cursor()
+
+    for user_id in user_id_list:
+        cur.execute(sql_delete, user_id)
+        conn.commit()
+
+    for interaction in interaction_list:
+        if interaction[0] in user_id_list:
+            cur.execute(sql_profiles, interaction)
+            conn.commit()
+
+    
+
+    cur.close()
+    conn.close()
 
 def insert_app_info_table(**kwargs):
     ti = kwargs["ti"]
@@ -538,22 +606,20 @@ def train(df):
     for i in range(len(B)):
         B[i][i] = 0
 
-    # 절대경로 입력하기
-    with open("/level2-3-recsys-finalproject-recsys-07/Model/B.pickle", "wb") as f:
+     # 절대경로 입력하기
+    with open("/level2-3-recsys-finalproject-recsys-07/BE/model/B.pickle", "wb") as f:
         pickle.dump(B, f)
-    with open(
-        "/level2-3-recsys-finalproject-recsys-07/Model/app_stat.pickle", "wb"
-    ) as f:
+    with open("/level2-3-recsys-finalproject-recsys-07/BE/model/app_stat.pickle", "wb") as f:
         df = pd.DataFrame(df.groupby("appid")[["mean", "std"]].max())
         pickle.dump(df, f)
 
 
 with DAG(
-    dag_id="NEW_ID_DB_UPDATE",
-    description="Data collection via API call and Updating DB",
-    start_date=datetime(2024, 3, 22, 9, 0),
-    schedule_interval="00 9 * * *",
-    tags=["collection", "updating", "training", "making_files"],
+    dag_id="DAILY_UPDATE",
+    description="Data collection via API call, Updating DB and Refresh Model Inference",
+    schedule_interval="00 0 * * *",
+    start_date=datetime(2024, 3, 22, 15, 0, 0),  # 한국 시간으로 매일 자정
+    tags=["new_id","collection", "updating", "training", "making_files"],
 ) as dag:
 
     start = DummyOperator(task_id="start")
@@ -588,9 +654,19 @@ with DAG(
         python_callable=insert_user_info_table,
     )
 
+    update_user_info = PythonOperator(
+        task_id="update_user_info",
+        python_callable=update_user_info_table,
+    )
+
     insert_interaction = PythonOperator(
         task_id="insert_interaction",
         python_callable=insert_interactions_table,
+    )
+
+    update_interactions = PythonOperator(
+        task_id="update_interactions",
+        python_callable=update_interactions_table,
     )
 
     insert_app_info = PythonOperator(
@@ -634,7 +710,9 @@ with DAG(
         >> get_not_exist_app_ids
         >> separation_insert_and_update_ids
         >> insert_user_info
+        >> update_user_info
         >> insert_interaction
+        >> update_interactions
         >> insert_app_info
         >> mark_app_use
         >> mark_user_use
