@@ -113,8 +113,6 @@ async def service_initialize(app: FastAPI):
     app.state.df = df
     app.state.col = col
     # sql 연결
-<<<<<<< HEAD
-=======
     app.state.app_info_df = fetch_table_data("app_info")
     app.state.app_info_df["appid"] = app.state.app_info_df["appid"].map(int)
     print("got app info")
@@ -122,7 +120,6 @@ async def service_initialize(app: FastAPI):
     print("got user info")
     # app.state.interaction_df = fetch_table_data("user_game_interaction")
     print("got interaction info")
->>>>>>> origin/BE_30_KEW
     yield
 
 
