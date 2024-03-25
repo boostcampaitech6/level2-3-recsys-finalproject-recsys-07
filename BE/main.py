@@ -1,6 +1,9 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Query
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 import math
+import numpy as np
 import pandas as pd
 import pickle
 import requests
@@ -71,7 +74,7 @@ def get_user_games(user_id):
         else:
             return []  # API는 성공했으나 게임 목록이 없는 경우
     except requests.exceptions.RequestException as e:
-        return -1  # 에러가 발생한 경우
+        return -2  # 에러가 발생한 경우
 
 
 def extract_steam64id_from_url(profile_url):
@@ -119,6 +122,15 @@ async def service_initialize(app: FastAPI):
 
 app = FastAPI(lifespan=service_initialize)
 
+app.mount("/static", StaticFiles(directory="fe"), name="static")
+
+templates = Jinja2Templates(directory="fe")
+
+
+@app.get("/")
+async def read_root(request: Request):
+    return templates.TemplateResponse("prototype3.html", {"request": request})
+
 
 @app.get("/predict")
 async def predict(request: Request, user_urls: str = Query(...)):
@@ -132,6 +144,14 @@ async def predict(request: Request, user_urls: str = Query(...)):
     urls = list(user_urls.split(","))
     user_libraries = [get_user_games(extract_steam64id_from_url(url)) for url in urls]
 
+    users_error = [0, 0]
+    for i, library in enumerate(user_libraries):
+        if library in [-1, -2]:
+            users_error[i] = library
+        if library == []:
+            users_error[i] = -3
+    if users_error != [0, 0]:
+        return {"errorcode": users_error}
     # input validation
     # get user information from db
     # get user infromation from steam api
@@ -165,6 +185,14 @@ async def predict(request: Request, user_urls: str = Query(...)):
     ]
 
     df = pd.DataFrame(predict_data, columns=["appid", "p1likelihood", "p2likelihood"])
+    for i, library in enumerate(user_libraries):
+        appid2idx = {appid: idx for idx, appid in df["appid"].items()}
+        df[f"p{i+1}own"] = 0
+        for game in library:
+            try:
+                df.iloc[appid2idx[game["appid"]], 3 + i] = 1
+            except:
+                pass
     df = df.merge(app.state.app_info_df, on="appid")
     predict_with_metadata = json.loads(df.to_json(orient="records"))
 
