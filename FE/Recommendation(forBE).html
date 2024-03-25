@@ -1,0 +1,276 @@
+<html lang="en">
+	<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Steam Game Recommendation System</title>
+        <link rel="stylesheet" href="style.css">
+       
+	</head>
+	<body>
+		<header style="text-align: center;">
+            <!-- 로고 이미지 추가. 클릭 시 resetPage 함수 호출 -->
+            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="cursor: pointer;" onclick="window.location.href='index(forBE).html';" />
+        </header>
+		<main>
+            <p id="loadingText" style="display:none;">약 10초 정도 걸립니다...</p>
+            <div id="spinner" class="spinner" style="display: none;"></div>
+            
+            <section id="recommendationSection" style="display:none;">
+                <div id="fo"><h1>Filter Options</h1></div>
+                <div class="filter-options" style="text-align: center;">
+                    <div>
+                    <span>Age :</span>
+                    <input type="radio" id="adult" name="age">
+                    <label for="adult">adult only</label>
+                    <input type="radio" id="all" name="age" checked>
+                    <label for="all">for everyone</label>
+                    <input type="radio" id="age-all" name="age">
+                    <label for="age-all">show all</label>
+                    </div>
+                    <div>
+                    <span>charge :</span>
+                    <input type="radio" id="free" name="charge">
+                    <label for="free">free of charge</label>
+                    <input type="radio" id="pay" name="charge">
+                    <label for="pay">pay of charge</label>
+                    <input type="radio" id="charge-all" name="charge" checked>
+                    <label for="charge-all">show all</label>
+                    </div>
+                    <div>
+                    <span>player :</span>
+                    <input type="radio" id="multiplayer" name="player">
+                    <label for="multiplayer">Multiplayer</label>
+                    <input type="radio" id="singleplayer" name="player">
+                    <label for="singleplayer">Singleplayer</label>
+                    <input type="radio" id="player-all" name="player" checked>
+                    <label for="player-all">show all</label>
+                    </div>
+                    <div>
+                        <span>player1 own :</span>
+                        <input type="radio" id="p1own" name="player1">
+                        <label for="p1own">owned</label>
+                        <input type="radio" id="np1own" name="player1">
+                        <label for="np1own">not owned</label>
+                        <input type="radio" id="player-all" name="player1" checked>
+                        <label for="player-all">show all</label>
+                    </div>
+                    <div>
+                        <span>player2 own :</span>
+                        <input type="radio" id="p2own" name="player2">
+                        <label for="p2own">owned</label>
+                        <input type="radio" id="np2own" name="player2">
+                        <label for="np2own">not owned</label>
+                        <input type="radio" id="player-all" name="player2" checked>
+                        <label for="player-all">show all</label>
+                    </div>
+                    <div>
+                    <span>multi_option :</span>
+                    <input type="checkbox" id="PvP" name="PvP">
+                    <label for="PvP">PvP</label>
+                    <input type="checkbox" id="Co_op" name="Co_op">
+                    <label for="Co_op">Co_op</label>
+                    <input type="checkbox" id="MMO" name="MMO">
+                    <label for="MMO">MMO</label>
+                    </div>
+                    <div>
+                        <span>platform :</span>
+                        <input type="checkbox" id="Windows" name="Windows">
+                        <label for="Windows">Windows</label>
+                        <input type="checkbox" id="Mac" name="Mac">
+                        <label for="Mac">Mac</label>
+                        <input type="checkbox" id="Linux" name="Linux">
+                        <label for="Linux">Linux</label>
+                    </div>
+                    <div>
+                        <span>genres :</span>
+                            <input type="checkbox" id="Action" name="Action">
+                            <label for="Action">Action</label>
+                            <input type="checkbox" id="Indie" name="Indie">
+                            <label for="Indie">Indie</label>
+                            <input type="checkbox" id="Adventure" name="Adventure">
+                            <label for="Adventure">Adventure</label>
+                            <input type="checkbox" id="Casual" name="Casual">
+                            <label for="Casual">Casual</label>
+                            <input type="checkbox" id="Simulation" name="Simulation">
+                            <label for="Simulation">Simulation</label>
+                            <input type="checkbox" id="Strategy" name="Strategy">
+                            <label for="Strategy">Strategy</label>
+                            <input type="checkbox" id="RPG" name="RPG">
+                            <label for="RPG">RPG</label>
+                            <input type="checkbox" id="Sports" name="Sports">
+                            <label for="Sports">Sports</label>
+                            <input type="checkbox" id="Racing" name="Racing">
+                            <label for="Racing">Racing</label>
+                            <input type="checkbox" id="Violent" name="Violent">
+                            <label for="Violent">Violent</label>
+                            <input type="checkbox" id="Gore" name="Gore">
+                            <label for="Gore">Gore</label>
+                    </div>
+                    <!-- 필요한 만큼 체크박스를 더 추가하세요 -->
+                    <button class = "apply-filter-button" onclick="applyFilters()">Apply</button>
+                </div>
+                
+                <div id="gamesGrid">
+                    <!-- 이 부분은 JavaScript를 사용하여 백엔드로부터 받은 데이터를 기반으로 동적으로 생성될 예정입니다. -->
+                </div>
+    
+            </section>
+		</main>
+		<script>
+            window.onload = function() {
+                recommendGames();
+            };
+            let globalData = [];
+
+			function recommendGames() {
+                // 입력 값 가져오기
+                const playerUrl1 = localStorage.getItem('playerUrl1');
+                const playerUrl2 = localStorage.getItem('playerUrl2');
+                const url = `http://223.130.140.189:8000/predict?user_urls=${player1Code},${player2Code}`;
+
+                // 로딩 텍스트와 스피너 표시
+                document.getElementById('loadingText').style.display = 'block';
+                document.getElementById('spinner').style.display = 'block';
+
+                // fetch('output_example.json')
+                fetch(url) // Modify this path as necessary
+                .then(response => response.json())
+                .then(data => {
+                // 여기서 에러 처리 함수 호출
+                if (data.errorcode) {
+                   handleBackendError(data)// 에러가 처리되었다면, 이후의 로직은 실행하지 않음
+                   return;
+                }
+                globalData = data; // 전체 데이터 저장
+                // 초기 로드 시 is_adult가 0인 게임만 표시
+                const initialData = data.filter(game => game.is_adult === 0).slice(0, 12);
+                updateRecommendations(initialData);
+                })
+                .catch(error => console.error('Error loading JSON:', error))
+                .finally(() => {document.getElementById('spinner').style.display = 'none';
+                           document.getElementById('loadingText').style.display = 'none';
+                });
+            }
+            
+        function updateRecommendations(data) {
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesGrid.innerHTML = ''; // 기존 컨텐츠 초기화
+
+            if(data) {
+                data.forEach((game, index) => {
+                    var p1 = parseInt(game.p1likelihood*100*0.9);
+                    var p2 = parseInt(game.p1likelihood*100*0.9);
+                    
+                    let ownershipMessage = "";
+
+                    if (game.p1own === 1 && game.p2own === 0) {
+                        // p1만 게임을 소유하고 있는 경우
+                        ownershipMessage = "Player 1 owns this game, while Player 2 does not.";
+                    } else if (game.p1own === 0 && game.p2own === 1) {
+                        // p2만 게임을 소유하고 있는 경우
+                        ownershipMessage = "Player 2 owns this game, while Player 1 does not.";
+                    } else if (game.p1own === 1 && game.p2own === 1) {
+                        // p1과 p2 모두 게임을 소유하고 있는 경우
+                        ownershipMessage = "Both Player 1 and Player 2 own this game.";
+                    } else {
+                        // p1과 p2 모두 게임을 소유하고 있지 않은 경우
+                        ownershipMessage = "Neither Player 1 nor Player 2 owns this game.";
+                    }
+
+                    const gameCard = `
+                        <div>
+                            <a href="https://store.steampowered.com/app/${game.appid}" target="_blank"><img src = "https://cdn.akamai.steamstatic.com//steam//apps//${game.appid}//header.jpg?t=1666290860"></a>
+                            <h3>${index + 1}. ${game.name}</h3> <!-- 게임 순서로 이름을 표시 -->
+                            <div style="margin-bottom: 2px;">
+                                <p style="color: white">선호도 (게임을 좋아할 확률)</p>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <spen style="text-align: left; color: #1FC1CC">player1 : ${parseInt(game.p1likelihood*100*0.9)}%</spen>
+                                        <spen style="text-align: right; color: #EBD834">player2 : ${parseInt(game.p2likelihood*100*0.9)}%</spen>
+                                    </div>
+                                <p style="color: white">취향 반영률</p>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <spen style="text-align: left; color: #1FC1CC">player1 : ${game.preference_ratio1}%</spen>
+                                        <spen style="text-align: right; color: #EBD834">player2 : ${game.preference_ratio2}%</spen>
+                                    </div>
+                                    <p style="color: white">${ownershipMessage}</p>
+                            </div>
+                            <br>
+                            <br>
+                            <div class="preference-bar-container">
+                                <div class="preference-bar" style="width: ${game.preference_ratio1}%;">${game.preference_ratio1}%</div>
+                                <div class="preference-bar-remaining" style="width: ${game.preference_ratio2}%;">${game.preference_ratio2}%</div>
+                            </div>
+                        </div>
+                    `;
+                    gamesGrid.innerHTML += gameCard;
+                });
+                // 입력 폼 숨기기
+                // document.getElementById('inputForm').style.display = 'none';
+                // 추천 섹션 표시
+                document.getElementById('recommendationSection').style.display = 'block';
+            } else {
+                console.error('Invalid data structure:', data); // 데이터 구조 문제 로깅
+            }
+        }
+
+            function applyFilters() {
+                let filteredData = globalData; // 모든 게임 데이터로 시작
+
+                // 체크박스 상태에 따라 필터링
+                filteredData = filteredData.filter(game => {
+                    const adultFilter = document.getElementById('adult').checked ? game.is_adult === 1 : true;
+                    const allFilter = document.getElementById('all').checked ? game.is_adult === 0 : true;
+                    const freeFilter = document.getElementById('free').checked ? game.is_free === 1 : true;
+                    const payFilter = document.getElementById('pay').checked ? game.is_free === 0 : true;
+                    const multiplayerFilter = document.getElementById('multiplayer').checked ? game.multi_player === 1 : true;
+                    const singleplayerFilter = document.getElementById('singleplayer').checked ? game.multi_player === 0 : true;
+                    const p1ownFilter = document.getElementById('p1own').checked ? game.p1own === 1 : true;
+                    const np1ownFilter = document.getElementById('np1own').checked ? game.p1own === 0 : true;
+                    const p2ownFilter = document.getElementById('p2own').checked ? game.p2own === 1 : true;
+                    const np2ownFilter = document.getElementById('np2own').checked ? game.p2own === 0 : true;
+                    const PvPFilter = document.getElementById('PvP').checked ? game.PvP === 1 : true;
+                    const Co_opFilter = document.getElementById('Co_op').checked ? game.Co_op === 1 : true;
+                    const MMOFilter = document.getElementById('MMO').checked ? game.MMO === 1 : true;
+                    const ActionFilter = document.getElementById('Action').checked ? game.Action === 1 : true;
+                    const IndieFilter = document.getElementById('Indie').checked ? game.Indie === 1 : true;
+                    const AdventureFilter = document.getElementById('Adventure').checked ? game.Adventure === 1 : true;
+                    const CasualFilter = document.getElementById('Casual').checked ? game.Casual === 1 : true;
+                    const SimulationFilter = document.getElementById('Simulation').checked ? game.Simulation === 1 : true;
+                    const StrategyFilter = document.getElementById('Strategy').checked ? game.Strategy === 1 : true;
+                    const RPGFilter = document.getElementById('RPG').checked ? game.RPG === 1 : true;
+                    const SportsFilter = document.getElementById('Sports').checked ? game.Sports === 1 : true;
+                    const RacingFilter = document.getElementById('Racing').checked ? game.Racing === 1 : true;
+                    const ViolentFilter = document.getElementById('Violent').checked ? game.Violent === 1 : true;
+                    const GoreFilter = document.getElementById('Gore').checked ? game.Gore === 1 : true;
+                    const WindowsFilter = document.getElementById('Windows').checked ? game.on_windows === 1 : true;
+                    const MacFilter = document.getElementById('Mac').checked ? game.on_mac === 1 : true;
+                    const LinuxFilter = document.getElementById('Linux').checked ? game.on_linux === 1 : true;
+                    // 각 필터 조건을 추가해야합니다.
+
+                    // 게임이 모든 필터 조건을 만족하는지 확인합니다.
+                    return adultFilter && allFilter && freeFilter && payFilter && multiplayerFilter && singleplayerFilter&&PvPFilter&&Co_opFilter&&MMOFilter&&ActionFilter&&IndieFilter&&AdventureFilter&&CasualFilter&&SimulationFilter&&StrategyFilter&&RPGFilter&&SportsFilter&&RacingFilter&&ViolentFilter&&GoreFilter&&WindowsFilter&&MacFilter&&LinuxFilter&&p2ownFilter&&p1ownFilter&&np1ownFilter&&np2ownFilter;
+                    // 다른 필터 조건도 여기에 추가
+                });
+                // 필터링된 결과 중 최대 12개를 화면에 표시합니다.
+                updateRecommendations(filteredData.slice(0, 12));
+            }
+
+			function resetPage() {
+				 // 추천 섹션을 숨기고 입력 폼 섹션을 다시 표시
+                 document.getElementById('recommendationSection').style.display = 'none';
+        
+				// 체크박스 초기화
+				document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+				checkbox.checked = false;
+				});
+			
+				// 필요한 경우 추가적인 초기화 작업을 여기에 수행
+			}
+		</script>
+	</body>
+</html>
+
+
+
+
+			
