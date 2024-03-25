@@ -113,6 +113,16 @@ async def service_initialize(app: FastAPI):
     app.state.df = df
     app.state.col = col
     # sql 연결
+<<<<<<< HEAD
+=======
+    app.state.app_info_df = fetch_table_data("app_info")
+    app.state.app_info_df["appid"] = app.state.app_info_df["appid"].map(int)
+    print("got app info")
+    app.state.user_info_df = fetch_table_data("user_info")
+    print("got user info")
+    # app.state.interaction_df = fetch_table_data("user_game_interaction")
+    print("got interaction info")
+>>>>>>> origin/BE_30_KEW
     yield
 
 
@@ -135,7 +145,7 @@ async def predict(request: Request, user_urls: str = Query(...)):
     Output: Status에 성공 여부 를, Response에 appid, likelihood를 return 합니다.
     """
     B = request.app.state.B
-    df = request.app.state.df
+    z_df = request.app.state.df
     col = request.app.state.col
     hash_col = {k: True for k in col}
     urls = list(user_urls.split(","))
@@ -159,7 +169,7 @@ async def predict(request: Request, user_urls: str = Query(...)):
             if appid not in hash_col:
                 continue
             time = labeling(game["playtime_forever"])
-            z_score = (game["playtime_forever"] - df.loc[appid, "mean"]) / df.loc[
+            z_score = (game["playtime_forever"] - z_df.loc[appid, "mean"]) / z_df.loc[
                 appid, "std"
             ]
             inference_pivot.loc[0, appid] = max(time + z_score, 0)
@@ -178,6 +188,7 @@ async def predict(request: Request, user_urls: str = Query(...)):
 
     idx2item = {i: v for i, v in enumerate(col)}
 
+<<<<<<< HEAD
     _, idx = torch.topk(S_, 12)
 
     return {
@@ -187,6 +198,34 @@ async def predict(request: Request, user_urls: str = Query(...)):
             for i in idx.reshape(-1).tolist()
         ],
     }
+=======
+    _, idx = torch.topk(S_, 1000)
+
+    predict_data = [
+        (idx2item[i], S[0][i].item(), S[-1][i].item()) for i in idx.reshape(-1).tolist()
+    ]
+
+    df = pd.DataFrame(predict_data, columns=["appid", "p1likelihood", "p2likelihood"])
+    for i, library in enumerate(user_libraries):
+        appid2idx = {appid: idx for idx, appid in df["appid"].items()}
+        df[f"p{i+1}own"] = 0
+        for game in library:
+            try:
+                df.iloc[appid2idx[game["appid"]], 3 + i] = 1
+            except:
+                pass
+    df = df.merge(app.state.app_info_df, on="appid")
+    df["total_preference"] = df["p1likelihood"] + df["p2likelihood"]
+
+    df["preference_ratio1"] = 100 * df["p1likelihood"] / df["total_preference"]
+    df["preference_ratio1"] = df["preference_ratio1"].astype("int")
+
+    df["preference_ratio2"] = 100 * df["p2likelihood"] / df["total_preference"]
+    df["preference_ratio2"] = df["preference_ratio2"].astype("int")
+    predict_with_metadata = json.loads(df.to_json(orient="records"))
+
+    return predict_with_metadata
+>>>>>>> origin/BE_30_KEW
 
 
 if __name__ == "__main__":
