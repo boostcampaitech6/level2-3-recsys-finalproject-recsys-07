@@ -3,12 +3,12 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Steam Game Recommendation System</title>
-		<link rel="stylesheet" href="style2.css">
+		<link rel="stylesheet" href="/static/style.css">
 	</head>
 	<body>
 		<header style="text-align: center;">
             <!-- 로고 이미지 추가. 클릭 시 resetPage 함수 호출 -->
-            <img src="logo_small.png" alt="Steambuddy Logo" style="cursor: pointer;" onclick="resetPage()" />
+            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="cursor: pointer;" onclick="resetPage()" />
         </header>
 		<main>
 			<section id="inputForm" style="text-align: center;">
@@ -140,7 +140,7 @@
 					localStorage.setItem('playerUrl2', playerUrl2);
 
 					// 다음 페이지로 이동
-					window.location.href = 'Recommendation(forBE).html';
+					window.location.href = '/static/Recommendation(forBE).html';
 				}
 			}
 			function resetPage() {
