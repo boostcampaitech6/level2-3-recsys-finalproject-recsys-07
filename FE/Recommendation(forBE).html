@@ -181,7 +181,11 @@
 
                     const gameCard = `
                         <div>
-                            <a href="https://store.steampowered.com/app/${game.appid}" target="_blank"><img src = "https://cdn.akamai.steamstatic.com//steam//apps//${game.appid}//header.jpg?t=1666290860"></a>
+                            <div class="game-image-container">
+                                <a href="https://store.steampowered.com/app/${game.appid}" target="_blank">
+                                    <img src="https://cdn.akamai.steamstatic.com//steam//apps//${game.appid}//header.jpg?t=1666290860" alt="${game.name}">
+                                </a>
+                            </div>
                             <h3>${index + 1}. ${game.name}</h3> <!-- 게임 순서로 이름을 표시 -->
                             <div style="margin-bottom: 2px;">
                                 <p style="color: white">선호도 (게임을 좋아할 확률)</p>
