@@ -39,11 +39,14 @@ async def service_initialize(app: FastAPI):
     추론을 위한 모델을 로드하고, db에 연결한다.
     """
     # load model
-    model = torch.jit.load("model/model_scripted.pt")
-    model.eval()
-    with open("model/Column.pickle", "rb") as f:
-        model.col = pickle.load(f)
-    app.state.model = model
+    with open("model/B.pickle", "rb") as f:
+        B = pickle.load(f)
+    with open("model/app_stat.pickle", "rb") as f:
+        df = pickle.load(f)
+        col = df.index
+    app.state.B = B
+    app.state.df = df
+    app.state.col = col
     # sql 연결
     yield
 
@@ -57,8 +60,9 @@ async def predict(user_urls: str, request: Request):
     Input: 복수의 steam user 들의 profil url을 comma(,) 를 delimeter로 하여 하나의 str로 입력받습니다.
     Output: Status에 성공 여부 를, Response에 appid, likelihood를 return 합니다.
     """
-    model = request.app.state.model
-    col = model.col
+    B = request.app.state.B
+    df = request.app.state.df
+    col = request.app.state.col
     hash_col = {k: True for k in col}
     urls = list(user_urls.split(","))
     user_libraries = [get_user_games(url) for url in urls]
@@ -73,12 +77,15 @@ async def predict(user_urls: str, request: Request):
             if appid not in hash_col:
                 continue
             time = labeling(game["playtime_forever"])
-            inference_pivot.loc[i, appid] = time
+            z_score = (game["playtime_forever"] - df.loc[appid, "mean"]) / df.loc[
+                appid, "std"
+            ]
+            inference_pivot.loc[0, appid] = max(time + z_score, 0)
 
     inference_pivot = inference_pivot.fillna(0)
     X = torch.tensor(inference_pivot.values).to(dtype=torch.float).to("cuda")
     # inference by model
-    S = model(X)
+    S = X @ B
     # post process
     S[0] -= torch.min(S[0])
     S[-1] -= torch.min(S[-1])
@@ -89,7 +96,7 @@ async def predict(user_urls: str, request: Request):
 
     idx2item = {i: v for i, v in enumerate(col)}
 
-    _, idx = torch.topk(S_, 12)
+    _, idx = torch.topk(S_, 1000)
 
     return {
         "dev": "progress",
