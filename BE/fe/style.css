@@ -1,0 +1,334 @@
+*{
+    font-family: "Nanum Gothic Coding", monospace;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, .1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #09f;
+    animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #181D25;
+    color: #DAE5E5;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* 에러 메시지 스타일 */
+#errorContainer {
+    color: red;
+    text-align: center;
+    padding: 10px 0;
+}
+
+#inputForm {
+    background-color: #223B7A;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group input[type="url"] {
+    width: calc(100% - 20px); /* Subtract padding */
+    padding: 10px;
+    border: 1px solid #2B4459;
+    background-color: #3D6180;
+    border-radius: 5px;
+    height: 40px;
+}
+
+input[type="url"] {
+    color: #DAE5E5; 
+}
+
+input[type="url"]::placeholder {
+    color: #DAE5E5;
+    text-align: left;
+    padding-left: 30px;
+}
+
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #DAE5E5;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 50px; /* Adjust as necessary */
+}
+
+.form-group button:hover {
+    background-color: #0056b3;
+}
+
+#gamesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 최소 250px의 너비를 가지며 가용 공간을 채워 한 줄에 카드를 표시 */
+    gap: 20px; /* 카드 사이의 간격 */
+    justify-content: center; /* 중앙 정렬 */
+    padding: 20px;
+    width: 60%;
+    margin: 0 auto; /* 가운데 정렬 */
+  }
+@media (min-width: 768px) { /* 768px 이상의 화면에서 적용 */
+    #gamesGrid {
+      grid-template-columns: repeat(3, 1fr); /* 한 줄에 3개의 카드만 표시 */
+    }
+}
+  
+@media (max-width: 767px) { /* 767px 이하의 화면에서 적용 */
+    #gamesGrid {
+      grid-template-columns: repeat(2, 1fr); /* 한 줄에 2개의 카드만 표시 */
+    }
+}
+  
+@media (max-width: 480px) { /* 480px 이하의 화면에서 적용 */
+    #gamesGrid {
+      grid-template-columns: 1fr; /* 한 줄에 1개의 카드만 표시 */
+    }
+}
+  
+.gameCard {
+    background: #2A2E35;
+    color: #DAE5E5;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+  
+.gameCard img {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.preference-bar-container {
+    display: flex;
+    width: 100%;
+}
+
+.preference-bar, .preference-bar-remaining {
+    height: 20px; /* 바의 높이 설정 */
+    text-align: center;
+}
+
+.preference-bar {
+    background-color: #1FC1CC; /* 채워진 바의 배경색 */
+    color: white; /* 채워진 바의 글자색 */
+}
+
+.preference-bar-remaining {
+    background-color: #EBD834; /* 빈 공간의 배경색 */
+    color: black; /* 빈 공간의 글자색 */
+}
+
+  
+#fo {
+    max-width: 60%;
+    margin: 0 auto;
+}
+/* 필터 옵션 컨테이너 */
+.filter-options {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, auto); /* 필요한 만큼의 행을 만듭니다 */
+    gap: 10px;
+    background-color: #2A2E35;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    max-width: 60%; /* 최대 너비 설정 */
+    margin: 0 auto; /* 가운데 정렬 */
+}
+
+/* 각 필터 그룹을 위한 스타일 */
+.filter-group {
+    display: grid;
+    grid-template-columns: auto 1fr; /* 레이블과 옵션을 위한 두 개의 열 */
+    align-items: center;
+    gap: 10px;
+}
+
+/* 필터 레이블 스타일 */
+.filter-label {
+    color: #DAE5E5;
+    font-weight: bold;
+}
+
+/* 체크박스와 라디오 버튼 컨트롤 스타일링 */
+.filter-control {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* 라디오 버튼과 체크박스 레이블 스타일 */
+.filter-control label {
+    background-color: #3D6180;
+    color: #DAE5E5;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 체크된 라디오 버튼과 체크박스 레이블 스타일링 */
+input[type="checkbox"]:checked + label,
+input[type="radio"]:checked + label {
+    background-color: #3D6180;
+}
+
+/* 필터 적용 버튼 스타일 */
+.apply-filter-button {
+    grid-column: 1 / -1; /* 버튼을 모든 열에 걸쳐 확장 */
+    justify-self: center; /* 버튼을 그리드 셀 내에서 가운데 정렬 */
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.apply-filter-button:hover {
+    background-color: #0056b3;
+}
+
+#openModal {
+    display: block;
+    margin: 2rem auto; /* 중앙 정렬을 위해 */
+    padding: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none; /* 처음에는 숨겨져 있음 */
+    position: fixed;
+    z-index: 1; /* 다른 요소들 위에 표시 */
+    left: 0;
+    top: 0;
+    width: 100%; /* 전체 너비 */
+    height: 100%; /* 전체 높이 */
+    overflow: auto; /* 필요 시 스크롤 */
+    background-color: rgba(0, 0, 0, 0.4); /* 어두운 효과 */
+}
+
+/* 모달 콘텐츠 스타일 */
+.modal-content {
+    position: relative;
+    margin: auto;
+    padding: 0;
+    width: 80%;
+    max-width: 1200px;
+    margin-top: 10%;
+}
+
+/* 닫기 버튼 스타일 */
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 100px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 이미지 스타일 */
+.modal-image {
+    display: none;
+    width: 100%;
+}
+
+/* 네비게이션 버튼 스타일 */
+.prev,
+.next {
+    cursor: pointer;
+    position: absolute;
+    top: 40%;
+    width: auto;
+    padding: 16px;
+    margin-top: -40px;
+    color: white;
+    font-weight: bold;
+    font-size: 100px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.prev:hover,
+.next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.slide-indicators {
+    text-align: center;
+    margin-top: 3%;
+}
+
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+    background-color: #717171;
+}
