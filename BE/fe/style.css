@@ -1,9 +1,3 @@
-*{
-    font-family: "Nanum Gothic Coding", monospace;
-    font-weight: 400;
-    font-style: normal;
-  }
-  
 .spinner-container {
     display: flex;
     align-items: center; /* 수직 가운데 정렬 */
@@ -39,6 +33,7 @@
     position: relative;
     overflow: hidden;
     border-radius: 10px; /* 이미지의 모서리를 둥글게 */
+    width: 100%;
 }
 
 .game-image-container img {
@@ -148,7 +143,7 @@ input[type="url"]::placeholder {
     gap: 20px; /* 카드 사이의 간격 */
     justify-content: center; /* 중앙 정렬 */
     padding: 20px;
-    width: 90%;
+    width: 95%;
     margin: 0 auto; /* 가운데 정렬 */
   }
 @media (min-width: 768px) { /* 768px 이상의 화면에서 적용 */
@@ -214,12 +209,14 @@ input[type="url"]::placeholder {
     line-height: 30px;
     background-color: #181D25;
     border-radius: 10px; /* 둥근 모서리 적용 */
+    font-size: large;
 }
   
 #fo {
     text-align: left;
-    max-width: 85%;
+    max-width: 80%;
     margin: 0 auto;
+    font-size: x-large;
 }
 /* 필터 옵션 컨테이너 */
 .filter-options {
@@ -231,8 +228,9 @@ input[type="url"]::placeholder {
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 2rem;
-    max-width: 85%; /* 최대 너비 설정 */
+    max-width: 80%; /* 최대 너비 설정 */
     margin: 0 auto; /* 가운데 정렬 */
+    font-size: large;
 }
 
 /* 각 필터 그룹을 위한 스타일 */

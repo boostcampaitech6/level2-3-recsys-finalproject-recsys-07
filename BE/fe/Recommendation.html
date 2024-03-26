@@ -4,7 +4,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Steam Game Recommendation System</title>
         <link rel="stylesheet" href="/static/style.css">
-       
 	</head>
 	<body>
 		<header style="text-align: center;">
@@ -192,11 +191,11 @@
                         <div>
                             <div class="game-image-container">
                                 <a href="https://store.steampowered.com/app/${game.appid}" target="_blank">
-                                    <img src="https://cdn.akamai.steamstatic.com//steam//apps//${game.appid}//header.jpg?t=1666290860" alt="${game.name}">
+                                    <img src="https://cdn.akamai.steamstatic.com//steam//apps//${game.appid}//header.jpg?t=1666290860" alt="${game.name}" width="100%">
                                 </a>
                             </div>
-                            <h3 style="font-weight: bold;" >${index + 1}. ${game.name}</h3> <!-- 게임 순서로 이름을 표시 -->
-                            <div id="gameinfo" style="padding: 2px; margin-bottom: 2px;">
+                            <h2 style="font-weight: bold;" >${index + 1}. ${game.name}</h3> <!-- 게임 순서로 이름을 표시 -->
+                            <div id="gameinfo" style="padding: 2px; margin-bottom: 2px; font-size: large;">
                                 <div style = "margin-top=20px; padding: 2px; background: #2A2E35; border-radius: 5px;">
                                     <div style="display: flex; justify-content: space-between; margin-top: 20px;">
                                         <spen style="text-align: left; color: #1FC1CC">&nbsp;Player 1의 예상 선호도: ${parseInt(game.p1likelihood*100*0.9)}%</spen>
