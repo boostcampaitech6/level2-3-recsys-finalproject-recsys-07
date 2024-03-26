@@ -54,7 +54,20 @@
     		</div>
 		</main>
 		<script>
+			window.onload = function() {
+    		// 로컬 스토리지에서 에러 메시지를 읽어옴
+    		const backendErrorMessage = localStorage.getItem('backendErrorMessage');
 
+    		// 에러 메시지가 있으면 에러 섹션에 표시
+    		if (backendErrorMessage) {
+        		const errorContainer = document.getElementById('errorContainer');
+        		errorContainer.textContent = backendErrorMessage;
+        		document.getElementById('errorSection').style.display = 'block';
+
+        		// 다음 번 로드를 위해 메시지 삭제
+        		localStorage.removeItem('backendErrorMessage');
+    		}
+		}
 			let modal = document.getElementById("myModal");
 			let btn = document.getElementById("openModal");
 			let span = document.getElementsByClassName("close")[0];
