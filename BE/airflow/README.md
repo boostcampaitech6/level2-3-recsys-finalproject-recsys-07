@@ -1,6 +1,30 @@
-1. airflow 폴더 내에서 install_airflow.sh 로 airflow를 설치합니다.
-3. 터미널 창을 2개 켜 airflow webserver ­--port 8080 와 airflow scheduler 를 실행합니다.
-4. Admin Connections에서 Steam_DB와 SteamAPI, AppAPI 를 생성해주세요. (자세한 방법은 추후 보완)
-5. resource 폴더 내에 API_key.txt, new_id_list.txt 파일을 준비해주세요.
-6. DB_upload.py 파일의 read_meta_files 함수에 텍스트 파일의 절대경로를 입력합니다.
-7. DAG를 실행할 수 있습니다.(아직 시간 설정은 하지 않았습니다.)
+0. MySQL 설치 및 환경변수 설정
+sudo apt-get install mysql-server
+
+##### env 1
+mysql_config --cflags
+##### env 2
+mysql_config --libs
+
+MYSQLCLIENT_CFLAGS=(env 1 출력물)
+MYSQLCLIENT_LDFLAGS=(env 2 출력물)
+
+1. airflow 설치
+./install_airflow.sh
+
+2. airflow 계정 생성
+airflow users create --username OOO --firstname OOO --lastname OOO --role Admin --email OO@OO.com --password OOO
+
+3. airflow 실행
+터미널을 2개 켜야 합니다.
+터미널 1: airflow webserver ­--port 8080
+터미널 2: airflow scheduler
+
+4. airflow 로그인 후 Admin Connections 생성
+Steam_DB와 SteamAPI, AppAPI 를 생성해야 합니다.
+
+5. new_id_list.txt 파일 생성
+BE/airflow/resource/new_id_list.txt 파일을 생성해야 합니다.
+
+6. DAG 실행
+airflow 사이트에서 DAGs 목록에 있는 Daily_update를 활성화하면 실행이 됩니다.
