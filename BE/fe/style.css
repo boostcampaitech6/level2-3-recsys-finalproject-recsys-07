@@ -217,7 +217,8 @@ input[type="url"]::placeholder {
 }
   
 #fo {
-    max-width: 85%;
+    text-align: left;
+    max-width: 1200px;
     margin: 0 auto;
 }
 /* 필터 옵션 컨테이너 */
@@ -230,7 +231,7 @@ input[type="url"]::placeholder {
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 2rem;
-    max-width: 85%; /* 최대 너비 설정 */
+    max-width: 1200px; /* 최대 너비 설정 */
     margin: 0 auto; /* 가운데 정렬 */
 }
 
