@@ -161,6 +161,8 @@ async def predict(request: Request, user_urls: str = Query(...)):
         if library == []:
             users_error[i] = -3
     if users_error != [0, 0]:
+        with open("resource/error_input.txt", "a") as f:
+            f.write(" ".join(urls) + "\n")
         return {"errorcode": users_error}
     # input validation
     # get user information from db
@@ -224,7 +226,8 @@ async def predict(request: Request, user_urls: str = Query(...)):
     df["preference_ratio2"] = 100 * df["p2likelihood"] / df["total_preference"]
     df["preference_ratio2"] = df["preference_ratio2"].astype("int")
     predict_with_metadata = json.loads(df.to_json(orient="records"))
-
+    with open("resource/log.txt", "a") as f:
+        f.write(",".join(user_ids) + "\n")
     return predict_with_metadata
 
 
