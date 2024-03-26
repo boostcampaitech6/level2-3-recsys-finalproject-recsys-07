@@ -150,7 +150,7 @@ async def predict(request: Request, user_urls: str = Query(...)):
     user_ids = [extract_steam64id_from_url(url) for url in urls]
     with open("resource/new_id_list.txt", "a") as f:
         for id in user_ids:
-            if id not in app.state.user_hash:
+            if id and id not in app.state.user_hash:
                 f.write(id + "\n")
     user_libraries = [get_user_games(id) for id in user_ids]
 
