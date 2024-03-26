@@ -225,29 +225,44 @@
         }
         
         function handleBackendError(data) {
-            let errorMessage = ''; // 에러 메시지를 저장할 변수 초기화
-
+            let errorMessage = '<p>'; // 에러 메시지를 저장할 변수 초기화, HTML <p> 태그로 감싸서 시작
             // 에러 코드에 따른 메시지 처리
             const [player1ErrorCode, player2ErrorCode] = data.errorcode;
-
             // Player 1 에러 메시지
             if (player1ErrorCode !== 0) {
-                errorMessage += `Player 1: ${getErrorMessage(player1ErrorCode)}\n`;
+                errorMessage += `Player 1 Error: ${getErrorMessage(player1ErrorCode)}<br>`;
             }
-
             // Player 2 에러 메시지
             if (player2ErrorCode !== 0) {
-                errorMessage += `Player 2: ${getErrorMessage(player2ErrorCode)}`;
+                errorMessage += `Player 2 Error: ${getErrorMessage(player2ErrorCode)}`;
             }
-            
+            errorMessage += '</p>'; // 메시지 종료 시 HTML </p> 태그 추가
             // localStorage에 에러 메시지 저장
             localStorage.setItem('backendErrorMessage', errorMessage);
             document.getElementById('spinner').style.display = 'none'; // 스피너 숨기기
             document.getElementById('loadingText').style.display = 'none'; // 로딩 텍스트 숨기기
-            console.log(errorMessage);
-
+            // 에러 메시지를 localStorage에 HTML 형식으로 저장했으므로, 인덱스 페이지에서 이를 올바르게 표시하기 위해 innerHTML을 사용
+            const errorContainer = document.getElementById('errorContainer');
+            if (errorContainer && localStorage.getItem('backendErrorMessage')) {
+                errorContainer.innerHTML = localStorage.getItem('backendErrorMessage');
+                document.getElementById('errorSection').style.display = 'block';
+                localStorage.removeItem('backendErrorMessage'); // 에러 메시지 표시 후 localStorage에서 삭제
+            }
             // 다음 페이지로 이동
             window.location.href = '/static/index.html';
+        }
+        // 에러 코드별 메시지 반환 함수
+        function getErrorMessage(errorCode) {
+            switch (errorCode) {
+                case -1:
+                    return '해당 Steam ID를 찾을 수 없습니다. 입력하신 정보를 다시 확인해주세요.';
+                case -2:
+                    return 'Steam API와의 통신 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.';
+                case -3:
+                    return '게임 목록이 비어있습니다. Steam 프로필의 공개 설정을 확인하거나, 게임을 추가한 후 다시 시도해주세요.';
+                default:
+                    return '알 수 없는 에러가 발생했습니다. 지원팀에 문의해주시기 바랍니다.';
+            }
         }
 
         // 에러 코드별 메시지 반환 함수
