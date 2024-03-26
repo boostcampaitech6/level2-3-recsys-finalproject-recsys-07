@@ -8,16 +8,16 @@
 	<body>
 		<header style="text-align: center;">
             <!-- 로고 이미지 추가. 클릭 시 resetPage 함수 호출 -->
-            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="cursor: pointer;" onclick="resetPage()" />
+            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="padding-top: 100px; cursor: pointer;" onclick="resetPage()" />
         </header>
 		<main>
 			<section id="inputForm" style="text-align: center;">
 				<form id="steamForm" onsubmit="event.preventDefault();">
 					<div class="form-group">
-						<input type="url" id="playerUrl1" name="playerUrl1" placeholder="Player 1 Steam profile URL" required>
+						<input type="url" id="playerUrl1" name="playerUrl1" placeholder="Player 1 Steam Profile URL" required>
 					</div>
 					<div class="form-group">
-						<input type="url" id="playerUrl2" name="playerUrl2" placeholder="Player 2 Steam profile URL" required>
+						<input type="url" id="playerUrl2" name="playerUrl2" placeholder="Player 2 Steam Profile URL" required>
 						</div>
 					<div class="form-group">
 						<button type="submit" onclick="validateAndRecommend()">Recommendation</button>

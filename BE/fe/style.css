@@ -97,7 +97,7 @@ header {
 #inputForm {
     background-color: #223B7A;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 600px;
@@ -129,7 +129,7 @@ input[type="url"]::placeholder {
 
 .form-group button {
     width: 100%;
-    padding: 10px;
+    padding: 5px;
     background-color: #007bff;
     color: #DAE5E5;
     border: none;
@@ -206,9 +206,18 @@ input[type="url"]::placeholder {
     color: black; /* 빈 공간의 글자색 */
 }
 
+.cate {
+    display: inline-block;
+    width: 110px; /* 원하는 너비로 조정 */
+    text-align: center;
+    font-size: 14px;
+    line-height: 30px;
+    background-color: #181D25;
+    border-radius: 10px; /* 둥근 모서리 적용 */
+}
   
 #fo {
-    max-width: 60%;
+    max-width: 85%;
     margin: 0 auto;
 }
 /* 필터 옵션 컨테이너 */
@@ -221,7 +230,7 @@ input[type="url"]::placeholder {
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 2rem;
-    max-width: 60%; /* 최대 너비 설정 */
+    max-width: 85%; /* 최대 너비 설정 */
     margin: 0 auto; /* 가운데 정렬 */
 }
 
