@@ -201,7 +201,7 @@ async def predict(request: Request, user_urls: str = Query(...)):
         df[f"p{i+1}own"] = 0
         for game in library:
             try:
-                df.iloc[appid2idx[game["appid"]], 3 + i] = 1
+                df.iloc[appid2idx[str(game["appid"])], 3 + i] = 1
             except:
                 pass
     # print(app.state.app_info_df[app.state.app_info_df["appid"].isna()])
