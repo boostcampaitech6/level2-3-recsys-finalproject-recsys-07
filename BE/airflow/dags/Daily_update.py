@@ -1,4 +1,3 @@
-
 import re
 import logging
 import pickle
@@ -17,8 +16,12 @@ from airflow.operators.dummy import DummyOperator
 
 def read_meta_files():
     # 절대경로 입력하기
-    api_key_file_path = "/level2-3-recsys-finalproject-recsys-07/BE/resource/API_key.txt"
-    new_ids_file_path = "/level2-3-recsys-finalproject-recsys-07/BE/resource/new_id_list.txt"
+    api_key_file_path = (
+        "/home/hun/level2-3-recsys-finalproject-recsys-07/BE/resource/API_key.txt"
+    )
+    new_ids_file_path = (
+        "/home/hun/level2-3-recsys-finalproject-recsys-07/BE/resource/new_id_list.txt"
+    )
 
     with open(api_key_file_path, "r", encoding="utf-8") as fr:
         steam_api_key = fr.read()
@@ -331,16 +334,17 @@ def insert_user_info_table(**kwargs):
     cur.close()
     conn.close()
 
+
 def update_user_info_table(**kwargs):
     ti = kwargs["ti"]
-    _,user_profile_list = ti.xcom_pull(task_ids="separation_insert_and_update_ids")
+    _, user_profile_list = ti.xcom_pull(task_ids="separation_insert_and_update_ids")
 
     mysql_hook = MySqlHook(mysql_conn_id="steam_DB")
 
     sql_profiles = """UPDATE `user_info`
                     SET data_time=%s, personaname=%s
                     WHERE steamid LIKE %s"""
-    
+
     conn = mysql_hook.get_conn()
     cur = conn.cursor()
     for user_profile in user_profile_list:
@@ -350,6 +354,7 @@ def update_user_info_table(**kwargs):
 
     cur.close()
     conn.close()
+
 
 def insert_interactions_table(**kwargs):
     ti = kwargs["ti"]
@@ -387,12 +392,13 @@ def insert_interactions_table(**kwargs):
     cur.close()
     conn.close()
 
+
 def update_interactions_table(**kwargs):
     ti = kwargs["ti"]
     _, user_profile_list = ti.xcom_pull(task_ids="separation_insert_and_update_ids")
     user_id_list = [user[0] for user in user_profile_list]
     user_game_list = ti.xcom_pull(task_ids="user_games_api_calls")
-    
+
     app_infos = pd.DataFrame(
         user_game_list,
         columns=[
@@ -412,7 +418,7 @@ def update_interactions_table(**kwargs):
 
     sql_delete = """ DELETE FROM `user_game_interaction`
                     WHERE user_id LIKE %s"""
-    
+
     sql_profiles = """INSERT INTO `user_game_interaction`
                     (user_id, appid, playtime_forever, playtime_2weeks) 
                     VALUES (%s, %s, %s, %s);"""
@@ -428,10 +434,9 @@ def update_interactions_table(**kwargs):
             cur.execute(sql_profiles, interaction)
             conn.commit()
 
-    
-
     cur.close()
     conn.close()
+
 
 def insert_app_info_table(**kwargs):
     ti = kwargs["ti"]
@@ -606,10 +611,15 @@ def train(df):
     for i in range(len(B)):
         B[i][i] = 0
 
-     # 절대경로 입력하기
-    with open("/level2-3-recsys-finalproject-recsys-07/BE/model/B.pickle", "wb") as f:
+    # 절대경로 입력하기
+    with open(
+        "/home/hun/level2-3-recsys-finalproject-recsys-07/BE/model/B.pickle", "wb"
+    ) as f:
         pickle.dump(B, f)
-    with open("/level2-3-recsys-finalproject-recsys-07/BE/model/app_stat.pickle", "wb") as f:
+    with open(
+        "/home/hun/level2-3-recsys-finalproject-recsys-07/BE/model/app_stat.pickle",
+        "wb",
+    ) as f:
         df = pd.DataFrame(df.groupby("appid")[["mean", "std"]].max())
         pickle.dump(df, f)
 
@@ -619,7 +629,7 @@ with DAG(
     description="Data collection via API call, Updating DB and Refresh Model Inference",
     schedule_interval="00 0 * * *",
     start_date=datetime(2024, 3, 22, 15, 0, 0),  # 한국 시간으로 매일 자정
-    tags=["new_id","collection", "updating", "training", "making_files"],
+    tags=["new_id", "collection", "updating", "training", "making_files"],
 ) as dag:
 
     start = DummyOperator(task_id="start")

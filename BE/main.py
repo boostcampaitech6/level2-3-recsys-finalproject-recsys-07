@@ -130,7 +130,7 @@ templates = Jinja2Templates(directory="fe")
 
 @app.get("/")
 async def read_root(request: Request):
-    return templates.TemplateResponse("prototype3.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.get("/predict")
