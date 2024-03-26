@@ -5,7 +5,7 @@ import math
 import torch
 import itertools
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.http.hooks.http import HttpHook
@@ -630,6 +630,7 @@ with DAG(
     schedule_interval="00 0 * * *",
     start_date=datetime(2024, 3, 22, 15, 0, 0),  # 한국 시간으로 매일 자정
     tags=["new_id", "collection", "updating", "training", "making_files"],
+    dagrun_timeout=timedelta(minutes=20),
 ) as dag:
 
     start = DummyOperator(task_id="start")
