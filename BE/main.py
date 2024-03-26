@@ -178,7 +178,7 @@ async def predict(request: Request, user_urls: str = Query(...)):
             z_score = (
                 game["playtime_forever"] - z_df.loc[str(appid), "mean"]
             ) / z_df.loc[str(appid), "std"]
-            inference_pivot.loc[i, str(appid)] = max(time + z_score, 0)
+            inference_pivot.loc[i, str(appid)] = max(time + z_score, 1.0e-5)
     # print(hash_col)
     inference_pivot = inference_pivot.fillna(0)
     X = torch.tensor(inference_pivot.values).to(dtype=torch.float).to("cuda")
