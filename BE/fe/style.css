@@ -148,7 +148,7 @@ input[type="url"]::placeholder {
     gap: 20px; /* 카드 사이의 간격 */
     justify-content: center; /* 중앙 정렬 */
     padding: 20px;
-    width: 60%;
+    width: 90%;
     margin: 0 auto; /* 가운데 정렬 */
   }
 @media (min-width: 768px) { /* 768px 이상의 화면에서 적용 */
@@ -218,7 +218,7 @@ input[type="url"]::placeholder {
   
 #fo {
     text-align: left;
-    max-width: 1200px;
+    max-width: 85%;
     margin: 0 auto;
 }
 /* 필터 옵션 컨테이너 */
@@ -231,7 +231,7 @@ input[type="url"]::placeholder {
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 2rem;
-    max-width: 1200px; /* 최대 너비 설정 */
+    max-width: 85%; /* 최대 너비 설정 */
     margin: 0 auto; /* 가운데 정렬 */
 }
 
