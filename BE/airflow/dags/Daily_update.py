@@ -27,7 +27,7 @@ def read_meta_files():
         steam_api_key = fr.read()
 
     with open(new_ids_file_path, "r") as fr:
-        new_ids = [line.strip() for line in fr]
+        new_ids = list(set([line.strip() for line in fr]))
 
     with open(new_ids_file_path, "w") as fw:
         pass
