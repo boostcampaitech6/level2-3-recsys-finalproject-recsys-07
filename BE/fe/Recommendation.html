@@ -181,16 +181,19 @@
                         <div>
                             <a href="https://store.steampowered.com/app/${game.appid}" target="_blank"><img src = "https://cdn.akamai.steamstatic.com//steam//apps//${game.appid}//header.jpg?t=1666290860"></a>
                             <h3 style="font-weight: bold;" >${index + 1}. ${game.name}</h3> <!-- 게임 순서로 이름을 표시 -->
-                            <div id = "gameinfo" style="padding: 2px; margin-bottom: 2px;">
+                            <div id="gameinfo" style="padding: 2px; margin-bottom: 2px;">
                                 <div style = "margin-top=20px; padding: 2px; background: #2A2E35; border-radius: 5px;">
-                                    <p style="color: white"><spen style="text-align: left; color: #1FC1CC">player1의 선호도 ${parseInt(game.p1likelihood*100*0.9)}%</spen><spen style="text-align: right; color: #EBD834">player2의 선호도${parseInt(game.p2likelihood*100*0.9)}%</spen></p>
-                                    <p style="color: white; ">게임 추천 취향 반영률</p>
+                                    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                                        <spen style="text-align: left; color: #1FC1CC">&nbsp;Player 1의 예상 선호도: ${parseInt(game.p1likelihood*100*0.9)}%</spen>
+                                        <spen style="text-align: right; color: #EBD834">Player 2의 예상 선호도: ${parseInt(game.p2likelihood*100*0.9)}%&nbsp;</spen>
+                                    </div>
+                                    <p style="color: white; ">&nbsp;게임 추천 취향 반영률</p>
                                     <div class="preference-bar-container">
                                         <div class="preference-bar" style="width: ${game.preference_ratio1}%;">${game.preference_ratio1}%</div>
                                         <div class="preference-bar-remaining" style="width: ${game.preference_ratio2}%;">${game.preference_ratio2}%</div>
                                     </div> 
-                                    <p style="color: #1FC1CC">${ownershipMessage1}</p>
-                                    <p style="color: #EBD834">${ownershipMessage2}</p>
+                                    <p style="color: #1FC1CC">&nbsp;${ownershipMessage1}</p>
+                                    <p style="color: #EBD834">&nbsp;${ownershipMessage2}</p>
                                 </div>
                             </div>  
                         </div>
