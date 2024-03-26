@@ -115,6 +115,9 @@ async def service_initialize(app: FastAPI):
     app.state.app_info_df["appid"] = app.state.app_info_df["appid"].map(int)
     print("got app info")
     app.state.user_info_df = fetch_table_data("user_info")
+    app.state.user_hash = {
+        v: idx for idx, v in app.state.user_info_df["steamid"].items()
+    }
     print("got user info")
     # app.state.interaction_df = fetch_table_data("user_game_interaction")
     print("got interaction info")
@@ -144,7 +147,12 @@ async def predict(request: Request, user_urls: str = Query(...)):
     col = request.app.state.col
     hash_col = {int(k): True for k in col}
     urls = list(user_urls.split(","))
-    user_libraries = [get_user_games(extract_steam64id_from_url(url)) for url in urls]
+    user_ids = [extract_steam64id_from_url(url) for url in urls]
+    with open("resource/new_id_list.txt", "a") as f:
+        for id in user_ids:
+            if id not in app.state.user_hash:
+                f.write(id + "\n")
+    user_libraries = [get_user_games(id) for id in user_ids]
 
     users_error = [0, 0]
     for i, library in enumerate(user_libraries):
@@ -201,7 +209,7 @@ async def predict(request: Request, user_urls: str = Query(...)):
         df[f"p{i+1}own"] = 0
         for game in library:
             try:
-                df.iloc[appid2idx[game["appid"]], 3 + i] = 1
+                df.iloc[appid2idx[str(game["appid"])], 3 + i] = 1
             except:
                 pass
     # print(app.state.app_info_df[app.state.app_info_df["appid"].isna()])
