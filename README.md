@@ -1,7 +1,7 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=300&section=header&text=STEAMBUDDY&fontSize=90&animation=fadeIn&fontAlignY=38" />
 
 ## 프로젝트 개요
-![Untitled1 (1)](https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/f3e70b21-8e9c-4be9-a08a-d89256935ab2)
+<p align="center"><img src="https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/f3e70b21-8e9c-4be9-a08a-d89256935ab2"></p>  
 <br>
 **“STEAM BUDDY” 는 사용자와 친구의 Steam ID를 이용하여 Steam 라이브러리를 분석하고 친구와 함께 즐길 수 있는 게임을 선호도 순으로 추천해주는 서비스 입니다.**
 
