@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=wave&color=auto&height=300&section=header&text=STEAM BUDDY%20render&fontSize=90" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=300&section=header&text=STEAMBUDDY&fontSize=90&animation=fadeIn&fontAlignY=38" />
 
 ## 프로젝트 개요
 ![Untitled1 (1)](https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/f3e70b21-8e9c-4be9-a08a-d89256935ab2)
