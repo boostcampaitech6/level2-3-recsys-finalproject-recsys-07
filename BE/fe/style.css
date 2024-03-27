@@ -265,7 +265,7 @@ input[type="url"]::placeholder {
 
 .choose{
     display: inline-block;
-    width: 120px; /* 원하는 너비로 조정 */
+    width: 170px; /* 원하는 너비로 조정 */
 }
 
 /* 체크된 라디오 버튼과 체크박스 레이블 스타일링 */
