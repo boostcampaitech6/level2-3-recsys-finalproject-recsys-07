@@ -5,7 +5,7 @@ from io import BytesIO
 import threading
 import matplotlib.pyplot as plt
 import json
-
+import re
 import sys
 
 sys.path.append("../Model")
@@ -186,6 +186,27 @@ def show_recommendations():
                 ax.yaxis.set_ticklabels([])  # y축 눈금 레이블 숨기기
 
                 col.pyplot(fig)
+
+
+def extract_steam64id_from_url(profile_url, api_key):
+    # profile에 steam64ID가 있을경우
+    match = re.search(r"steamcommunity\.com/profiles/([0-9]+)", profile_url)
+    if match:
+        return match.group(1)
+
+    # 사용자 정의 URL의 경우 Steam API를 통해 steam64ID 조회
+    match = re.search(r"steamcommunity\.com/id/(\w+)", profile_url)
+    if match:
+        vanity_url = match.group(1)
+        response = requests.get(
+            f"https://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/",
+            params={"key": api_key, "vanityurl": vanity_url},
+        )
+        data = response.json()
+        if data["response"]["success"] == 1:
+            return data["response"]["steamid"]
+
+    return None
 
 
 # main 함수에서는 페이지네이션 로직을 제거하고, 단순히 show_recommendations를 호출합니다.
