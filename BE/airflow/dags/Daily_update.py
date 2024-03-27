@@ -2,6 +2,7 @@ import re
 import logging
 import pickle
 import math
+import json
 import torch
 import itertools
 import pandas as pd
@@ -12,19 +13,23 @@ from airflow.providers.http.hooks.http import HttpHook
 from airflow.providers.mysql.hooks.mysql import MySqlHook
 from airflow.providers.mysql.operators.mysql import MySqlOperator
 from airflow.operators.dummy import DummyOperator
+from airflow.operators.bash_operator import BashOperator
 
 
 def read_meta_files():
     # 절대경로 입력하기
     api_key_file_path = (
-        "/home/hun/level2-3-recsys-finalproject-recsys-07/BE/resource/API_key.txt"
+        "/home/hun/level2-3-recsys-finalproject-recsys-07/config/api_key.json"
     )
     new_ids_file_path = (
         "/home/hun/level2-3-recsys-finalproject-recsys-07/BE/resource/new_id_list.txt"
     )
 
-    with open(api_key_file_path, "r", encoding="utf-8") as fr:
-        steam_api_key = fr.read()
+    # JSON 파일 열고 읽기
+    with open(api_key_file_path) as j_fr:
+        data = json.load(j_fr)
+        
+    steam_api_key = data['api_key']
 
     with open(new_ids_file_path, "r") as fr:
         new_ids = list(set([line.strip() for line in fr]))
@@ -635,6 +640,11 @@ with DAG(
 
     start = DummyOperator(task_id="start")
 
+    terminate_backend = BashOperator(
+        task_id='terminate_backend',
+        bash_command='/home/hun/level2-3-recsys-finalproject-recsys-07/BE/terminate_server.sh',  # 쉘 스크립트의 전체 경로
+    )
+
     read_steamID_APIkey = PythonOperator(
         task_id="read_steamID_APIkey",
         python_callable=read_meta_files,
@@ -711,10 +721,16 @@ with DAG(
         python_callable=preprocessing_and_training,
     )
 
+    restart_backend = BashOperator(
+        task_id='restart_backend',
+        bash_command='/home/hun/level2-3-recsys-finalproject-recsys-07/BE/restart_server.sh',  # 쉘 스크립트의 전체 경로
+    )
+
     finish = DummyOperator(task_id="finish")
 
     (
         start
+        >> terminate_backend
         >> read_steamID_APIkey
         >> user_profile_api_calls
         >> user_games_api_calls
@@ -728,5 +744,6 @@ with DAG(
         >> mark_app_use
         >> mark_user_use
         >> file_generation
+        >> restart_backend
         >> finish
     )
