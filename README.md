@@ -15,10 +15,12 @@
 
 ## 프로토타입
 <p align="center"><img src="https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/7d419e6a-6f2b-4fe7-8981-faa367d427b8"></p>  
-![fastprototype-ezgif com-video-to-gif-converter](https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/9fcbad5f-8f72-4128-8d82-ccc8c4f90633)
+<br>
+<p align="center"><img src="https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/9fcbad5f-8f72-4128-8d82-ccc8c4f90633"></p> 
 
 
 ## 최종 배포본
 <p align="center"><img src="https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/af54264f-9443-4d94-bcc6-e34169617b30"></p>  
-![ezgif-5-ece6693f5e](https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/39b9a8cc-b9f6-448e-9801-5d02a3a69333)
+<br>
+<p align="center"><img src="https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/39b9a8cc-b9f6-448e-9801-5d02a3a69333"></p> 
 
