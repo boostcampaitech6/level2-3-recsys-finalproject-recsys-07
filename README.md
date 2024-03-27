@@ -10,9 +10,19 @@
 
 ## 팀 소개
 ![image](https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/d255d548-1c2c-4866-a8f2-d2f5ab5bdb74)
-## 아키텍처
-<img width="1127" alt="Untitled (1)" src="https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/af54264f-9443-4d94-bcc6-e34169617b30">
 
-## 프로토타입 영상
 
-## 완성본 영상
+## 프로토타입
+
+- 아키텍처
+  ![image](https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/7d419e6a-6f2b-4fe7-8981-faa367d427b8)
+
+
+- 영상
+
+## 배포용
+
+- 아키텍처
+  <img width="1127" alt="Untitled (1)" src="https://github.com/boostcampaitech6/level2-3-recsys-finalproject-recsys-07/assets/102454481/af54264f-9443-4d94-bcc6-e34169617b30">
+
+- 영상
