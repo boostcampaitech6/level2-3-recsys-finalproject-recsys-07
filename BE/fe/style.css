@@ -1,19 +1,20 @@
-*{
-    font-family: "Nanum Gothic Coding", monospace;
-    font-weight: 400;
-    font-style: normal;
-  }
-  
-
-.spinner {
-    border: 4px solid rgba(0, 0, 0, .1);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border-left-color: #09f;
-    animation: spin 1s ease infinite;
+.spinner-container {
+    display: flex;
+    align-items: center; /* 수직 가운데 정렬 */
+    justify-content: center; /* 수평 가운데 정렬 */
+    margin-top: 5%;
 }
 
+#spinner {
+    border: 8px solid rgba(0, 0, 0, 0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    text-align: center;
+    border-left-color: #09f;
+    animation: spin 1s ease infinite;
+    margin-right: 10px;
+}
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -21,6 +22,51 @@
     100% {
         transform: rotate(360deg);
     }
+}
+
+#loadingText {
+    margin-left: 1%;
+    font-size: x-large;
+}
+
+.game-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px; /* 이미지의 모서리를 둥글게 */
+    width: 100%;
+}
+
+.game-image-container img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease, opacity 0.3s ease; /* 부드러운 변환을 위한 transition */
+}
+
+.game-image-container:hover img {
+    transform: scale(1.05); /* 이미지를 5% 확대 */
+    opacity: 0.7; /* 이미지를 약간 어둡게 */
+}
+
+.game-image-container::after {
+    content: '스팀 페이지로 이동하기'; /* 표시할 메시지 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 가운데 정렬 */
+    display: none;
+    color: white;
+    font-size: 18px;
+    padding: 10px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.game-image-container:hover::after {
+    display: block; /* 마우스 오버 시 메시지 표시 */
+    opacity: 1; /* 메시지를 완전히 불투명하게 */
 }
 
 body {
@@ -46,7 +92,7 @@ header {
 #inputForm {
     background-color: #223B7A;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 600px;
@@ -78,7 +124,7 @@ input[type="url"]::placeholder {
 
 .form-group button {
     width: 100%;
-    padding: 10px;
+    padding: 5px;
     background-color: #007bff;
     color: #DAE5E5;
     border: none;
@@ -97,7 +143,7 @@ input[type="url"]::placeholder {
     gap: 20px; /* 카드 사이의 간격 */
     justify-content: center; /* 중앙 정렬 */
     padding: 20px;
-    width: 60%;
+    width: 95%;
     margin: 0 auto; /* 가운데 정렬 */
   }
 @media (min-width: 768px) { /* 768px 이상의 화면에서 적용 */
@@ -155,10 +201,22 @@ input[type="url"]::placeholder {
     color: black; /* 빈 공간의 글자색 */
 }
 
+.cate {
+    display: inline-block;
+    width: 15%; /* 원하는 너비로 조정 */
+    text-align: center;
+    font-size: 14px;
+    line-height: 30px;
+    background-color: #181D25;
+    border-radius: 10px; /* 둥근 모서리 적용 */
+    font-size: large;
+}
   
 #fo {
-    max-width: 60%;
+    text-align: left;
+    max-width: 80%;
     margin: 0 auto;
+    font-size: x-large;
 }
 /* 필터 옵션 컨테이너 */
 .filter-options {
@@ -170,8 +228,9 @@ input[type="url"]::placeholder {
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 2rem;
-    max-width: 60%; /* 최대 너비 설정 */
+    max-width: 80%; /* 최대 너비 설정 */
     margin: 0 auto; /* 가운데 정렬 */
+    font-size: large;
 }
 
 /* 각 필터 그룹을 위한 스타일 */
@@ -204,11 +263,16 @@ input[type="url"]::placeholder {
     cursor: pointer;
 }
 
+.choose{
+    display: inline-block;
+    width: 170px; /* 원하는 너비로 조정 */
+}
+
 /* 체크된 라디오 버튼과 체크박스 레이블 스타일링 */
-input[type="checkbox"]:checked + label,
+/* input[type="checkbox"]:checked + label,
 input[type="radio"]:checked + label {
     background-color: #3D6180;
-}
+} */
 
 /* 필터 적용 버튼 스타일 */
 .apply-filter-button {
@@ -226,7 +290,21 @@ input[type="radio"]:checked + label {
     background-color: #0056b3;
 }
 
-#openModal {
+.modal-buttons-container {
+    display: flex;
+    justify-content: space-evenly; /* 버튼 사이의 간격을 균등하게 분배 */
+    align-items: center; /* 버튼을 수직 방향으로 중앙에 정렬 */
+    padding: 20px 0; /* 상하 간격을 추가 */
+}
+
+.modal-buttons-container button {
+    padding: 15px 30px; /* 버튼의 안쪽 여백을 조정 */
+    font-size: 1rem; /* 폰트 크기를 조정 */
+    flex: 1; /* flex 아이템들이 컨테이너 공간을 균등하게 차지하도록 설정 */
+    margin: 0 10px; /* 좌우 마진 추가 */
+}
+
+#openModal1 {
     display: block;
     margin: 2rem auto; /* 중앙 정렬을 위해 */
     padding: 1rem;
@@ -236,10 +314,12 @@ input[type="radio"]:checked + label {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.2rem;
+    margin-right: 10px;
+    margin-left: 20%;
 }
 
 /* 모달 스타일 */
-.modal {
+.modal1 {
     display: none; /* 처음에는 숨겨져 있음 */
     position: fixed;
     z-index: 1; /* 다른 요소들 위에 표시 */
@@ -252,7 +332,7 @@ input[type="radio"]:checked + label {
 }
 
 /* 모달 콘텐츠 스타일 */
-.modal-content {
+.modal-content1 {
     position: relative;
     margin: auto;
     padding: 0;
@@ -262,7 +342,7 @@ input[type="radio"]:checked + label {
 }
 
 /* 닫기 버튼 스타일 */
-.close {
+.close1 {
     color: #aaa;
     position: absolute;
     top: 10px;
@@ -272,22 +352,22 @@ input[type="radio"]:checked + label {
     cursor: pointer;
 }
 
-.close:hover,
-.close:focus {
+.close1:hover,
+.close1:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
 }
 
 /* 이미지 스타일 */
-.modal-image {
+.modal-image1 {
     display: none;
     width: 100%;
 }
 
 /* 네비게이션 버튼 스타일 */
-.prev,
-.next {
+.prev1,
+.next1 {
     cursor: pointer;
     position: absolute;
     top: 40%;
@@ -303,22 +383,22 @@ input[type="radio"]:checked + label {
     -webkit-user-select: none;
 }
 
-.next {
+.next1 {
     right: 0;
     border-radius: 3px 0 0 3px;
 }
 
-.prev:hover,
-.next:hover {
+.prev1:hover,
+.next1:hover {
     background-color: rgba(0, 0, 0, 0.8);
 }
 
-.slide-indicators {
+.slide-indicators1 {
     text-align: center;
     margin-top: 3%;
 }
 
-.dot {
+.dot1 {
     cursor: pointer;
     height: 15px;
     width: 15px;
@@ -329,6 +409,114 @@ input[type="radio"]:checked + label {
     transition: background-color 0.6s ease;
 }
 
-.active, .dot:hover {
+.active, .dot1:hover {
+    background-color: #717171;
+}
+
+#openModal2 {
+    display: block;
+    margin: 2rem auto; /* 중앙 정렬을 위해 */
+    padding: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-right: 20%;
+}
+
+/* 모달 스타일 */
+.modal2 {
+    display: none; /* 처음에는 숨겨져 있음 */
+    position: fixed;
+    z-index: 1; /* 다른 요소들 위에 표시 */
+    left: 0;
+    top: 0;
+    width: 100%; /* 전체 너비 */
+    height: 100%; /* 전체 높이 */
+    overflow: auto; /* 필요 시 스크롤 */
+    background-color: rgba(0, 0, 0, 0.4); /* 어두운 효과 */
+}
+
+/* 모달 콘텐츠 스타일 */
+.modal-content2 {
+    position: relative;
+    margin: auto;
+    padding: 0;
+    width: 80%;
+    max-width: 1200px;
+    margin-top: 10%;
+}
+
+/* 닫기 버튼 스타일 */
+.close2 {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 100px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close2:hover,
+.close2:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 이미지 스타일 */
+.modal-image2 {
+    display: none;
+    width: 100%;
+}
+
+/* 네비게이션 버튼 스타일 */
+.prev2,
+.next2 {
+    cursor: pointer;
+    position: absolute;
+    top: 40%;
+    width: auto;
+    padding: 16px;
+    margin-top: -40px;
+    color: white;
+    font-weight: bold;
+    font-size: 100px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.next2 {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.prev2:hover,
+.next2:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.slide-indicators2 {
+    text-align: center;
+    margin-top: 3%;
+}
+
+.dot2 {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active, .dot2:hover {
     background-color: #717171;
 }

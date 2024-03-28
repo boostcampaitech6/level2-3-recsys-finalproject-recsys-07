@@ -8,19 +8,19 @@
 	<body>
 		<header style="text-align: center;">
             <!-- 로고 이미지 추가. 클릭 시 resetPage 함수 호출 -->
-            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="cursor: pointer;" onclick="resetPage()" />
+            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="padding-top: 100px; cursor: pointer;" onclick="resetPage()" />
         </header>
 		<main>
 			<section id="inputForm" style="text-align: center;">
 				<form id="steamForm" onsubmit="event.preventDefault();">
 					<div class="form-group">
-						<input type="url" id="playerUrl1" name="playerUrl1" placeholder="Player 1 Steam profile URL" required>
+						<input type="url" id="playerUrl1" name="playerUrl1" placeholder="Player 1 Steam Profile URL" required>
 					</div>
 					<div class="form-group">
-						<input type="url" id="playerUrl2" name="playerUrl2" placeholder="Player 2 Steam profile URL" required>
+						<input type="url" id="playerUrl2" name="playerUrl2" placeholder="Player 2 Steam Profile URL" required>
 						</div>
 					<div class="form-group">
-						<button type="submit" onclick="validateAndRecommend()">Recommendation</button>
+						<button type="submit" onclick="validateAndRecommend()">게임 추천 받기</button>
 					</div>
 				</form>
 			</section>
@@ -29,95 +29,215 @@
 				<div id="errorContainer"></div>
 				<!-- 이 부분은 JavaScript를 사용하여 백엔드로부터 받은 데이터를 기반으로 동적으로 생성될 예정입니다. -->
 			</section>
+			<div class="modal-buttons-container">
+				<button id="openModal1" onclick="showSlides1()"> Profile URL 얻는 방법</button>
+				<button id="openModal2" onclick="showSlides2()"> Steam Buddy 서비스 안내</button>
+			</div>
 
-			<button id="openModal" onclick="showSlides()">Click 유저 프로필 url 얻는 방법!</button>
-
-    		<div id="myModal" class="modal">
-        		<span class="close">&times;</span>
+    		<div id="myModal1" class="modal1">
+        		<span class="close1">&times;</span>
 				
-        		<div class="modal-content">
-            		<img class="modal-image" src="/static/slide1.PNG" alt="Image 1">
-            		<img class="modal-image" src="/static/slide2.PNG" alt="Image 2">
-            		<img class="modal-image" src="/static/slide3.PNG" alt="Image 3">
-					<img class="modal-image" src="/static/slide4.PNG" alt="Image 4">
+        		<div class="modal-content1">
+            		<img class="modal-image1" src="/static/slide1.png" alt="Image 1">
+            		<img class="modal-image1" src="/static/slide2.png" alt="Image 2">
+            		<img class="modal-image1" src="/static/slide3.png" alt="Image 3">
+					<img class="modal-image1" src="/static/slide4.png" alt="Image 4">
+					<img class="modal-image1" src="/static/slide5.png" alt="Image 5">
+            		<img class="modal-image1" src="/static/slide6.png" alt="Image 6">
+            		<img class="modal-image1" src="/static/slide7.png" alt="Image 7">
+					<img class="modal-image1" src="/static/slide8.png" alt="Image 8">
+					<img class="modal-image1" src="/static/slide9.png" alt="Image 9">
+            		<img class="modal-image1" src="/static/slide10.png" alt="Image 10">
+            		<img class="modal-image1" src="/static/slide11.png" alt="Image 11">
+					<img class="modal-image1" src="/static/slide12.png" alt="Image 12">
             		<!-- 이미지를 더 추가할 수 있습니다. -->
         		</div>
-        		<a class="prev">&#10094;</a>
-        		<a class="next">&#10095;</a>
-				<p style="text-align: center;">빈 화면을 눌러 나오기!</p>
-				<div class="slide-indicators">
-					<span class="dot" onclick="currentSlide(1)"></span>
-					<span class="dot" onclick="currentSlide(2)"></span>
-					<span class="dot" onclick="currentSlide(3)"></span>
-					<span class="dot" onclick="currentSlide(4)"></span>
+        		<a class="prev1">&#10094;</a>
+        		<a class="next1">&#10095;</a>
+				<div class="slide-indicators1">
+					<span class="dot1" onclick="currentSlide1(1)"></span>
+					<span class="dot1" onclick="currentSlide1(2)"></span>
+					<span class="dot1" onclick="currentSlide1(3)"></span>
+					<span class="dot1" onclick="currentSlide1(4)"></span>
+					<span class="dot1" onclick="currentSlide1(5)"></span>
+					<span class="dot1" onclick="currentSlide1(6)"></span>
+					<span class="dot1" onclick="currentSlide1(7)"></span>
+					<span class="dot1" onclick="currentSlide1(8)"></span>
+					<span class="dot1" onclick="currentSlide1(9)"></span>
+					<span class="dot1" onclick="currentSlide1(10)"></span>
+					<span class="dot1" onclick="currentSlide1(11)"></span>
+					<span class="dot1" onclick="currentSlide1(12)"></span>
+				</div>
+    		</div>
+
+    		<div id="myModal2" class="modal2">
+        		<span class="close2">&times;</span>
+				
+        		<div class="modal-content2">
+            		<img class="modal-image2" src="/static/rslide1.png" alt="Image 1">
+            		<img class="modal-image2" src="/static/rslide2.png" alt="Image 2">
+            		<img class="modal-image2" src="/static/rslide3.png" alt="Image 3">
+            		<!-- 이미지를 더 추가할 수 있습니다. -->
+        		</div>
+        		<a class="prev2">&#10094;</a>
+        		<a class="next2">&#10095;</a>
+				<div class="slide-indicators2">
+					<span class="dot2" onclick="currentSlide2(1)"></span>
+					<span class="dot2" onclick="currentSlide2(2)"></span>
+					<span class="dot2" onclick="currentSlide2(3)"></span>
 				</div>
     		</div>
 		</main>
 		<script>
+			window.onload = function() {
+    		// 로컬 스토리지에서 에러 메시지를 읽어옴
+    		const backendErrorMessage = localStorage.getItem('backendErrorMessage');
 
-			let modal = document.getElementById("myModal");
-			let btn = document.getElementById("openModal");
-			let span = document.getElementsByClassName("close")[0];
-			let images = document.getElementsByClassName("modal-image");
-			let prev = document.getElementsByClassName("prev")[0];
-			let next = document.getElementsByClassName("next")[0];
-			let slideIndex = 1;
+    		// 에러 메시지가 있으면 에러 섹션에 표시
+    		if (backendErrorMessage) {
+        		const errorContainer = document.getElementById('errorContainer');
+        		errorContainer.innerHTML = backendErrorMessage;
+        		document.getElementById('errorSection').style.display = 'block';
 
-			btn.onclick = function() {
-				slideIndex = 1;
-    			modal.style.display = "block";
-    			showSlides(slideIndex);
+        		// 다음 번 로드를 위해 메시지 삭제
+        		localStorage.removeItem('backendErrorMessage');
+    		}
+		}
+			
+		let modal1 = document.getElementById("myModal1");
+			let btn1 = document.getElementById("openModal1");
+			let span1 = document.getElementsByClassName("close1")[0];
+			let images1 = document.getElementsByClassName("modal-image1");
+			let prev1 = document.getElementsByClassName("prev1")[0];
+			let next1 = document.getElementsByClassName("next1")[0];
+			let slideIndex1 = 1;
+
+			btn1.onclick = function() {
+				slideIndex1 = 1;
+    			modal1.style.display = "block";
+    			showSlides(slideIndex1);
 			}
 
-			span.onclick = function() {
-				modal.style.display = "none";
+			span1.onclick = function() {
+				modal1.style.display = "none";
 			};
 
 			// 슬라이드를 다음/이전으로 넘기는 함수
-			function plusSlides(n) {
-    			showSlides(slideIndex += n);
+			function plusSlides1(n) {
+    			showSlides1(slideIndex1 += n);
 			}
 
 			// 현재 슬라이드를 나타내는 함수
-			function currentSlide(n) {
-    			showSlides(slideIndex = n);
+			function currentSlide1(n) {
+    			showSlides1(slideIndex1 = n);
 			}
+
+			let modal2 = document.getElementById("myModal2");
+			let btn2 = document.getElementById("openModal2");
+			let span2 = document.getElementsByClassName("close2")[0];
+			let images2 = document.getElementsByClassName("modal-image2");
+			let prev2 = document.getElementsByClassName("prev2")[0];
+			let next2 = document.getElementsByClassName("next2")[0];
+			let slideIndex2 = 1;
+
+			btn1.onclick = function() {
+				slideIndex1 = 1;
+    			modal1.style.display = "block";
+    			showSlides1(slideIndex1);
+			}
+
+			span1.onclick = function() {
+				modal1.style.display = "none";
+			};
+
+			btn2.onclick = function() {
+				slideIndex2 = 1;
+    			modal2.style.display = "block";
+    			showSlides2(slideIndex2);
+			}
+
+			span2.onclick = function() {
+				modal2.style.display = "none";
+			};
+
+			// 슬라이드를 다음/이전으로 넘기는 함수
+			function plusSlides1(n) {
+    			showSlides1(slideIndex1 += n);
+			}
+
+			// 현재 슬라이드를 나타내는 함수
+			function currentSlide1(n) {
+    			showSlides1(slideIndex1 = n);
+			}
+
+			// 슬라이드를 다음/이전으로 넘기는 함수
+			function plusSlides2(n) {
+    			showSlides2(slideIndex2 += n);
+			}
+
+			// 현재 슬라이드를 나타내는 함수
+			function currentSlide2(n) {
+    			showSlides2(slideIndex2 = n);
+			}
+
 
 			// 슬라이드를 표시하는 함수
-			function showSlides(n) {
+			function showSlides1(n) {
     			let i;
-				let dots = document.getElementsByClassName("dot");
-    			if (n > images.length) {slideIndex = 1}    
-    			if (n < 1) {slideIndex = images.length}
-    			for (i = 0; i < images.length; i++) {
-        			images[i].style.display = "none";  
+				let dots1 = document.getElementsByClassName("dot1");
+    			if (n > images1.length) {slideIndex1 = 1}    
+    			if (n < 1) {slideIndex1 = images1.length}
+    			for (i = 0; i < images1.length; i++) {
+        			images1[i].style.display = "none";  
     			}
-				for (i = 0; i < dots.length; i++) {
-        			dots[i].className = dots[i].className.replace(" active", "");
+				for (i = 0; i < dots1.length; i++) {
+        			dots1[i].className = dots1[i].className.replace(" active", "");
     			}
-    			images[slideIndex-1].style.display = "block";  
-				dots[slideIndex - 1].className += " active";
-			}
-			
-			function currentSlide(n) {
-    			showSlides(slideIndex = n);
+    			images1[slideIndex1-1].style.display = "block";  
+				dots1[slideIndex1 - 1].className += " active";
 			}
 
-			showSlides(slideIndex);
+			function showSlides2(n) {
+    			let i;
+				let dots2 = document.getElementsByClassName("dot2");
+    			if (n > images2.length) {slideIndex2 = 1}    
+    			if (n < 1) {slideIndex2 = images2.length}
+    			for (i = 0; i < images2.length; i++) {
+        			images2[i].style.display = "none";  
+    			}
+				for (i = 0; i < dots2.length; i++) {
+        			dots2[i].className = dots2[i].className.replace(" active", "");
+    			}
+    			images2[slideIndex2-1].style.display = "block";  
+				dots2[slideIndex2 - 1].className += " active";
+			}
 
 			// 이전 버튼 클릭 이벤트
-			prev.addEventListener('click', function() {
-    			plusSlides(-1);
+			prev1.addEventListener('click', function() {
+    			plusSlides1(-1);
 			});
 
 			// 다음 버튼 클릭 이벤트
-			next.addEventListener('click', function() {
-    			plusSlides(1);
+			next1.addEventListener('click', function() {
+    			plusSlides1(1);
+			});
+
+			// 이전 버튼 클릭 이벤트
+			prev2.addEventListener('click', function() {
+    			plusSlides2(-1);
+			});
+
+			// 다음 버튼 클릭 이벤트
+			next2.addEventListener('click', function() {
+    			plusSlides2(1);
 			});
 
 			window.onclick = function(event) {
-        		if (event.target == modal) {
-            		modal.style.display = "none";
+        		if (event.target == modal1) {
+            		modal1.style.display = "none";
+        		}
+				if (event.target== modal2){
+					modal2.style.display = "none"
         		}
     		};
 

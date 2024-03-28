@@ -3,111 +3,117 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Steam Game Recommendation System</title>
-        <link rel="stylesheet" href="style.css">
-       
+        <link rel="stylesheet" href="/static/style.css">
 	</head>
 	<body>
 		<header style="text-align: center;">
             <!-- 로고 이미지 추가. 클릭 시 resetPage 함수 호출 -->
-            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="cursor: pointer;" onclick="window.location.href='/static/index.html';" />
+            <img src="/static/logo_small.png" alt="Steambuddy Logo" style="padding-top: 50px; cursor: pointer;" onclick="window.location.href='/static/index.html';" />
         </header>
 		<main>
-            <p id="loadingText" style="display:none;">약 10초 정도 걸립니다...</p>
-            <div id="spinner" class="spinner" style="display: none;"></div>
-            
+            <div class="spinner-container">
+                <div id="spinner" style="display: none;"></div>
+                <p id="loadingText" style="display: none;">약 10초 정도 걸립니다...</p>
+            </div>
+            <section id = "errorSection" style = "display:none;">
+				<div id="errorContainer"></div>
+				<!-- 이 부분은 JavaScript를 사용하여 백엔드로부터 받은 데이터를 기반으로 동적으로 생성될 예정입니다. -->
+			</section>
             <section id="recommendationSection" style="display:none;">
-                <div id="fo"><h1>Filter Options</h1></div>
-                <div class="filter-options" style="text-align: center;">
+                <div id="fo"><h1 style="font-weight: bold;">필터 옵션</h1></div>
+                <div class="filter-options" style="text-align: left;">
                     <div>
-                    <span>Age :</span>
-                    <input type="radio" id="adult" name="age">
-                    <label for="adult">adult only</label>
-                    <input type="radio" id="all" name="age" checked>
-                    <label for="all">for everyone</label>
-                    <input type="radio" id="age-all" name="age">
-                    <label for="age-all">show all</label>
+                        <span class="cate">연령 제한  </span>
+                        <input type="radio" id="adult" name="age">
+                        <label class="choose" for="adult">청소년 이용 불가</label>
+                        <input type="radio" id="all" name="age" checked>
+                        <label class="choose" for="all">청소년 이용 가능</label>
+                        <input type="radio" id="age-all" name="age">
+                        <label class="choose" for="age-all">모두 표시</label>
                     </div>
                     <div>
-                    <span>charge :</span>
-                    <input type="radio" id="free" name="charge">
-                    <label for="free">free of charge</label>
-                    <input type="radio" id="pay" name="charge">
-                    <label for="pay">pay of charge</label>
-                    <input type="radio" id="charge-all" name="charge" checked>
-                    <label for="charge-all">show all</label>
+                        <span class="cate">요금</span>
+                        <input type="radio" id="free" name="charge">
+                        <label class="choose" for="free">무료</label>
+                        <input type="radio" id="pay" name="charge">
+                        <label class="choose" for="pay">유료</label>
+                        <input type="radio" id="charge-all" name="charge" checked>
+                        <label class="choose" for="charge-all">모두 표시</label>
                     </div>
                     <div>
-                    <span>player :</span>
-                    <input type="radio" id="multiplayer" name="player">
-                    <label for="multiplayer">Multiplayer</label>
-                    <input type="radio" id="singleplayer" name="player">
-                    <label for="singleplayer">Singleplayer</label>
-                    <input type="radio" id="player-all" name="player" checked>
-                    <label for="player-all">show all</label>
+                        <span class="cate">플레이 옵션 </span>
+                        <input type="radio" id="multiplayer" name="player">
+                        <label class="choose" for="multiplayer">멀티플레이어</label>
+                        <input type="radio" id="singleplayer" name="player">
+                        <label class="choose" for="singleplayer">싱글플레이어</label>
+                        <input type="radio" id="player-all" name="player" checked>
+                        <label class="choose" for="player-all">모두 표시</label>
                     </div>
                     <div>
-                        <span>player1 own :</span>
+                        <span class="cate">Player 1 게임 보유</span>
                         <input type="radio" id="p1own" name="player1">
-                        <label for="p1own">owned</label>
+                        <label class="choose" for="p1own">보유함</label>
                         <input type="radio" id="np1own" name="player1">
-                        <label for="np1own">not owned</label>
+                        <label class="choose" for="np1own">보유하지 않음</label>
                         <input type="radio" id="player-all" name="player1" checked>
-                        <label for="player-all">show all</label>
+                        <label class="choose" for="player-all">상관 없음</label>
                     </div>
                     <div>
-                        <span>player2 own :</span>
+                        <span class="cate">Player 2 게임 보유</span>
                         <input type="radio" id="p2own" name="player2">
-                        <label for="p2own">owned</label>
+                        <label class="choose" for="p2own">보유함</label>
                         <input type="radio" id="np2own" name="player2">
-                        <label for="np2own">not owned</label>
+                        <label class="choose" for="np2own">보유하지 않음</label>
                         <input type="radio" id="player-all" name="player2" checked>
-                        <label for="player-all">show all</label>
+                        <label class="choose" for="player-all">상관 없음</label>
                     </div>
                     <div>
-                    <span>multi_option :</span>
-                    <input type="checkbox" id="PvP" name="PvP">
-                    <label for="PvP">PvP</label>
-                    <input type="checkbox" id="Co_op" name="Co_op">
-                    <label for="Co_op">Co_op</label>
-                    <input type="checkbox" id="MMO" name="MMO">
-                    <label for="MMO">MMO</label>
+                        <span class="cate">멀티 플레이 옵션 </span>
+                        <input type="checkbox" id="PvP" name="PvP">
+                        <label class="choose" for="PvP">PvP</label>
+                        <input type="checkbox" id="Co_op" name="Co_op">
+                        <label class="choose" for="Co_op">협동 플레이</label>
+                        <input type="checkbox" id="MMO" name="MMO">
+                        <label class="choose" for="MMO">MMO</label>
                     </div>
                     <div>
-                        <span>platform :</span>
+                        <span class="cate">플레이 플랫폼</span>
                         <input type="checkbox" id="Windows" name="Windows">
-                        <label for="Windows">Windows</label>
+                        <label class="choose" for="Windows">Windows</label>
                         <input type="checkbox" id="Mac" name="Mac">
-                        <label for="Mac">Mac</label>
+                        <label class="choose" for="Mac">Mac</label>
                         <input type="checkbox" id="Linux" name="Linux">
-                        <label for="Linux">Linux</label>
+                        <label class="choose" for="Linux">Linux</label>
                     </div>
                     <div>
-                        <span>genres :</span>
-                            <input type="checkbox" id="Action" name="Action">
-                            <label for="Action">Action</label>
-                            <input type="checkbox" id="Indie" name="Indie">
-                            <label for="Indie">Indie</label>
-                            <input type="checkbox" id="Adventure" name="Adventure">
-                            <label for="Adventure">Adventure</label>
-                            <input type="checkbox" id="Casual" name="Casual">
-                            <label for="Casual">Casual</label>
-                            <input type="checkbox" id="Simulation" name="Simulation">
-                            <label for="Simulation">Simulation</label>
-                            <input type="checkbox" id="Strategy" name="Strategy">
-                            <label for="Strategy">Strategy</label>
-                            <input type="checkbox" id="RPG" name="RPG">
-                            <label for="RPG">RPG</label>
-                            <input type="checkbox" id="Sports" name="Sports">
-                            <label for="Sports">Sports</label>
-                            <input type="checkbox" id="Racing" name="Racing">
-                            <label for="Racing">Racing</label>
-                            <input type="checkbox" id="Violent" name="Violent">
-                            <label for="Violent">Violent</label>
-                            <input type="checkbox" id="Gore" name="Gore">
-                            <label for="Gore">Gore</label>
-                    </div>
+                        <span class="cate">장르 </span>
+                        <input type="checkbox" id="Action" name="Action">
+                        <label for="Action">액션</label>
+                        <input type="checkbox" id="Indie" name="Indie">
+                        <label for="Indie">인디</label>
+                        <input type="checkbox" id="Adventure" name="Adventure">
+                        <label for="Adventure">어드벤처</label>
+                        <input type="checkbox" id="Casual" name="Casual">
+                        <label for="Casual">캐주얼</label>
+                        <input type="checkbox" id="Simulation" name="Simulation">
+                        <label for="Simulation">시뮬레이션</label>
+                        <input type="checkbox" id="Strategy" name="Strategy">
+                        <label for="Strategy">전략</label>
+                        <input type="checkbox" id="RPG" name="RPG">
+                        <label for="RPG">RPG</label>
+                        <input type="checkbox" id="Sports" name="Sports">
+                        <label for="Sports">스포츠</label>
+                        <input type="checkbox" id="Racing" name="Racing">
+                        <label for="Racing">레이싱</label>
+                        <input type="checkbox" id="Violent" name="Violent">
+                        <label for="Violent">폭력성</label>
+                        <input type="checkbox" id="Gore" name="Gore">
+                        <label for="Gore">고어</label>
+                    </div>                    
                     <!-- 필요한 만큼 체크박스를 더 추가하세요 -->
-                    <button class = "apply-filter-button" onclick="applyFilters()">Apply</button>
+                    <div style="text-align: right;">
+                        <button class = "apply-filter-button" onclick="applyFilters()"> 필터 적용 </button>
+                    </div>
                 </div>
                 
                 <div id="gamesGrid">
@@ -142,7 +148,6 @@
                    return;
                 }
                 globalData = data; // 전체 데이터 저장
-                console.log(data)
                 // 초기 로드 시 is_adult가 0인 게임만 표시
                 const initialData = data.filter(game => game.is_adult === 0).slice(0, 12);
                 updateRecommendations(initialData);
@@ -166,41 +171,45 @@
 
                     if (game.p1own === 1 && game.p2own === 0) {
                         // p1만 게임을 소유하고 있는 경우
-                        ownershipMessage = "Player 1 owns this game, while Player 2 does not.";
+                        ownershipMessage1 = "● Player 1 이 소유한 게임";
+                        ownershipMessage2 = "○ Player 2 이 소유하지 않은 게임";
                     } else if (game.p1own === 0 && game.p2own === 1) {
                         // p2만 게임을 소유하고 있는 경우
-                        ownershipMessage = "Player 2 owns this game, while Player 1 does not.";
+                        ownershipMessage1 = "○ Player 1 이 소유하지 않은 게임";
+                        ownershipMessage2 = "● Player 2 이 소유한 게임";
                     } else if (game.p1own === 1 && game.p2own === 1) {
                         // p1과 p2 모두 게임을 소유하고 있는 경우
-                        ownershipMessage = "Both Player 1 and Player 2 own this game.";
+                        ownershipMessage1 = "● Player 1 이 소유한 게임";
+                        ownershipMessage2 = "● Player 2 이 소유한 게임";
                     } else {
                         // p1과 p2 모두 게임을 소유하고 있지 않은 경우
-                        ownershipMessage = "Neither Player 1 nor Player 2 owns this game.";
+                        ownershipMessage1 = "○ Player 1 이 소유하지 않은 게임";
+                        ownershipMessage2 = "○ Player 2 이 소유하지 않은 게임";
                     }
 
                     const gameCard = `
                         <div>
-                            <a href="https://store.steampowered.com/app/${game.appid}" target="_blank"><img src = "https://cdn.akamai.steamstatic.com//steam//apps//${game.appid}//header.jpg?t=1666290860"></a>
-                            <h3>${index + 1}. ${game.name}</h3> <!-- 게임 순서로 이름을 표시 -->
-                            <div style="margin-bottom: 2px;">
-                                <p style="color: white">선호도 (게임을 좋아할 확률)</p>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <spen style="text-align: left; color: #1FC1CC">player1 : ${parseInt(game.p1likelihood*100*0.9)}%</spen>
-                                        <spen style="text-align: right; color: #EBD834">player2 : ${parseInt(game.p2likelihood*100*0.9)}%</spen>
-                                    </div>
-                                <p style="color: white">취향 반영률</p>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <spen style="text-align: left; color: #1FC1CC">player1 : ${game.preference_ratio1}%</spen>
-                                        <spen style="text-align: right; color: #EBD834">player2 : ${game.preference_ratio2}%</spen>
-                                    </div>
-                                    <p style="color: white">${ownershipMessage}</p>
+                            <div class="game-image-container">
+                                <a href="https://store.steampowered.com/app/${game.appid}" target="_blank">
+                                    <img src="https://cdn.akamai.steamstatic.com//steam//apps//${game.appid}//header.jpg?t=1666290860" alt="${game.name}" width="100%">
+                                </a>
                             </div>
-                            <br>
-                            <br>
-                            <div class="preference-bar-container">
-                                <div class="preference-bar" style="width: ${game.preference_ratio1}%;">${game.preference_ratio1}%</div>
-                                <div class="preference-bar-remaining" style="width: ${game.preference_ratio2}%;">${game.preference_ratio2}%</div>
-                            </div>
+                            <h2 style="font-weight: bold;" >${index + 1}. ${game.name}</h3> <!-- 게임 순서로 이름을 표시 -->
+                            <div id="gameinfo" style="padding: 2px; margin-bottom: 2px; font-size: large;">
+                                <div style = "margin-top=20px; padding: 2px; background: #2A2E35; border-radius: 5px;">
+                                    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                                        <spen style="text-align: left; color: #1FC1CC">&nbsp;Player 1의 예상 선호도: ${parseInt(game.p1likelihood*100*0.9)}%</spen>
+                                        <spen style="text-align: right; color: #EBD834">Player 2의 예상 선호도: ${parseInt(game.p2likelihood*100*0.9)}%&nbsp;</spen>
+                                    </div>
+                                    <p style="color: white; ">&nbsp;게임 추천 취향 반영률</p>
+                                    <div class="preference-bar-container">
+                                        <div class="preference-bar" style="width: ${game.preference_ratio1}%;">${game.preference_ratio1}%</div>
+                                        <div class="preference-bar-remaining" style="width: ${game.preference_ratio2}%;">${game.preference_ratio2}%</div>
+                                    </div> 
+                                    <p style="color: #1FC1CC">&nbsp;${ownershipMessage1}</p>
+                                    <p style="color: #EBD834">&nbsp;${ownershipMessage2}</p>
+                                </div>
+                            </div>  
                         </div>
                     `;
                     gamesGrid.innerHTML += gameCard;
@@ -211,6 +220,40 @@
                 document.getElementById('recommendationSection').style.display = 'block';
             } else {
                 console.error('Invalid data structure:', data); // 데이터 구조 문제 로깅
+            }
+        }
+        
+        function handleBackendError(data) {
+            let errorMessage = '<p>'; // 에러 메시지를 저장할 변수 초기화, HTML <p> 태그로 감싸서 시작
+            // 에러 코드에 따른 메시지 처리
+            const [player1ErrorCode, player2ErrorCode] = data.errorcode;
+            // Player 1 에러 메시지
+            if (player1ErrorCode !== 0) {
+                errorMessage += `Player 1 Error: ${getErrorMessage(player1ErrorCode)}<br>`;
+            }
+            // Player 2 에러 메시지
+            if (player2ErrorCode !== 0) {
+                errorMessage += `Player 2 Error: ${getErrorMessage(player2ErrorCode)}`;
+            }
+            errorMessage += '</p>'; // 메시지 종료 시 HTML </p> 태그 추가
+            // localStorage에 에러 메시지 저장
+            localStorage.setItem('backendErrorMessage', errorMessage);
+            document.getElementById('spinner').style.display = 'none'; // 스피너 숨기기
+            document.getElementById('loadingText').style.display = 'none'; // 로딩 텍스트 숨기기
+            // 다음 페이지로 이동
+            window.location.href = '/static/index.html';
+        }
+        // 에러 코드별 메시지 반환 함수
+        function getErrorMessage(errorCode) {
+            switch (errorCode) {
+                case -1:
+                    return '해당 Steam ID를 찾을 수 없습니다. 입력하신 정보를 다시 확인해주세요.';
+                case -2:
+                    return 'Steam API와의 통신 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.';
+                case -3:
+                    return '게임 목록이 비어있습니다. Steam 프로필의 공개 설정을 확인하거나, 게임을 추가한 후 다시 시도해주세요.';
+                default:
+                    return '알 수 없는 에러가 발생했습니다. 지원팀에 문의해주시기 바랍니다.';
             }
         }
 
